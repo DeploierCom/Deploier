@@ -1,0 +1,405 @@
+@import "tailwindcss";
+
+/*
+ * Deploier design tokens. A cool bond-paper ground, blue-black ink, a deep
+ * navy for the settlement layer and a wax-seal red used sparingly for the
+ * single thing on screen that matters most. Square corners and hairline rules:
+ * the look of a settlement statement, not a dashboard.
+ */
+@theme {
+  --color-paper: #f3f2ee;
+  --color-paper-2: #e9e8e2;
+  --color-paper-3: #dedcd4;
+  --color-card: #f8f7f4;
+  --color-field: #fbfbf9;
+  --color-field-edge: #9a9c97;
+  --color-ink: #10141a;
+  --color-ink-2: #2d343d;
+  --color-ink-3: #5a636e;
+  --color-faint: #69717b;
+  --color-line: #d7d6cf;
+  --color-line-2: #b8b9b2;
+
+  --color-stamp: #1c3d6e;
+  --color-stamp-deep: #142d52;
+  --color-stamp-soft: rgba(28, 61, 110, 0.09);
+  --color-seal: #b6402a;
+  --color-seal-soft: rgba(182, 64, 42, 0.1);
+
+  --color-up: #1d6b4c;
+  --color-up-soft: rgba(29, 107, 76, 0.1);
+  --color-down: #ad3a25;
+  --color-down-soft: rgba(173, 58, 37, 0.1);
+
+  --color-board: #0d1320;
+  --color-board-2: #141c2c;
+  --color-board-3: #26324a;
+  --color-chalk: #e8eae6;
+  --color-chalk-2: #9ea7b4;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: var(--font-instrument), "Times New Roman", serif;
+}
+
+@layer base {
+  :root {
+    --nav-bg: rgba(243, 242, 238, 0.94);
+    --shade: rgba(16, 20, 26, 0.08);
+    color-scheme: light;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-stamp);
+    color: var(--color-paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+  .wrap-wide {
+    max-width: 1320px;
+  }
+  @media (max-width: 560px) {
+    .wrap {
+      padding-inline: 16px;
+    }
+  }
+
+  /* Buttons: rectangular, ink or navy, an arrow that moves on hover. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 2px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .btn .arr {
+    transition: transform 0.15s;
+  }
+  .btn:not(:disabled):hover .arr {
+    transform: translateX(3px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .btn-ghost:not(:disabled):hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-ink:not(:disabled):hover {
+    background: var(--color-stamp);
+    border-color: var(--color-stamp);
+  }
+  .btn-accent,
+  .btn-pixel {
+    background: var(--color-stamp);
+    border-color: var(--color-stamp);
+    color: #fff;
+  }
+  .btn-accent:not(:disabled):hover,
+  .btn-pixel:not(:disabled):hover {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+  .btn-up {
+    background: var(--color-up);
+    border-color: var(--color-up);
+    color: #fff;
+  }
+  .btn-down {
+    background: var(--color-down);
+    border-color: var(--color-down);
+    color: #fff;
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .eyebrow,
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .serif {
+    font-family: var(--font-serif);
+    font-weight: 400;
+  }
+  .h-display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
+  }
+  .h-display em {
+    font-style: italic;
+    color: var(--color-stamp);
+  }
+  .lede {
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .prose-d p + p {
+    margin-top: 0.9em;
+  }
+  .prose-d p {
+    color: var(--color-ink-2);
+  }
+
+  .panel {
+    border: 1px solid var(--color-line-2);
+    background: var(--color-card);
+  }
+  .card {
+    border: 1px solid var(--color-line-2);
+    background: var(--color-card);
+  }
+  .sheet {
+    border: 1px solid var(--color-ink);
+    background: var(--color-card);
+    box-shadow: 0 14px 40px var(--shade);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-ink-2);
+  }
+  .chip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+  }
+  .chip-live {
+    color: var(--color-up);
+    border-color: color-mix(in srgb, var(--color-up) 45%, transparent);
+  }
+  .chip-practice {
+    color: var(--color-seal);
+    border-color: color-mix(in srgb, var(--color-seal) 45%, transparent);
+  }
+  .chip-target {
+    color: var(--color-stamp);
+    border-color: color-mix(in srgb, var(--color-stamp) 45%, transparent);
+  }
+
+  .field {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--color-field-edge);
+    background: var(--color-field);
+    padding: 0.6rem 0.75rem;
+    font-size: 15px;
+    color: var(--color-ink);
+    border-radius: 2px;
+  }
+  .field::placeholder {
+    color: var(--color-faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-stamp);
+    box-shadow: 0 0 0 2px var(--color-stamp-soft);
+  }
+  .field:disabled {
+    opacity: 0.6;
+  }
+
+  .link {
+    color: var(--color-stamp);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .link:hover {
+    color: var(--color-ink);
+  }
+
+  .scroll-x {
+    min-width: 0;
+    overflow-x: auto;
+  }
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .tbl th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--color-ink);
+    white-space: nowrap;
+  }
+  .tbl td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+
+  /* The redaction bar: the visual signature. Text the public never sees. */
+  .redact {
+    display: inline-block;
+    height: 0.78em;
+    vertical-align: -0.04em;
+    background: var(--color-ink);
+  }
+  .night .redact {
+    background: var(--color-chalk);
+  }
+
+  /* Ruled ledger background for statement-like blocks. */
+  .ruled {
+    background-image: repeating-linear-gradient(to bottom, transparent 0 31px, var(--color-line) 31px 32px);
+  }
+
+  /* Swap page wrapper kept from the shared swap screen. */
+  .acct .wrap-wide {
+    max-width: 1080px;
+  }
+}
+
+/* Dark settlement bands. Tokens are re-pointed so components inside read correctly. */
+.night {
+  --color-ink: #e8eae6;
+  --color-ink-2: #c6ccd4;
+  --color-ink-3: #9ea7b4;
+  --color-faint: #8d96a3;
+  --color-line: #26324a;
+  --color-line-2: #3a4864;
+  --color-card: #141c2c;
+  --color-paper: #0d1320;
+  --color-paper-2: #141c2c;
+  --color-paper-3: #26324a;
+  --color-field: #141c2c;
+  --color-field-edge: #3a4864;
+  --color-stamp: #9fb9e6;
+  --color-stamp-soft: rgba(159, 185, 230, 0.12);
+  --color-up: #7fc8a6;
+  --color-seal: #e58a72;
+  background: var(--color-board);
+  color: var(--color-ink);
+}
+.night .btn-accent {
+  background: var(--color-chalk);
+  border-color: var(--color-chalk);
+  color: var(--color-board);
+}
+.night .btn-accent:not(:disabled):hover {
+  background: transparent;
+  color: var(--color-chalk);
+}
+.night .btn-ghost {
+  border-color: var(--color-chalk);
+}
+.night .btn-ghost:not(:disabled):hover {
+  background: var(--color-chalk);
+  color: var(--color-board);
+}
+
+/* Hero ledger animation: rows reveal for the parties, stay barred for the public. */
+@keyframes slide-bar {
+  0%,
+  35% {
+    transform: scaleX(1);
+  }
+  55%,
+  85% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+.bar-anim {
+  transform-origin: right center;
+  animation: slide-bar 7s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  50% {
+    opacity: 0.35;
+  }
+}
+.pulse {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
