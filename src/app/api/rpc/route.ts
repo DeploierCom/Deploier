@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { readCapped } from "@/lib/guard";
 import { getStore } from "@/lib/auth/store";
 import { rpcBatch } from "@/lib/feeds/rpc";
 import { clientIp, trustsProxyHeaders } from "@/lib/netkey";
@@ -16,8 +17,8 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   const declared = Number(request.headers.get("content-length") ?? 0);
   if (declared > MAX_BODY) return NextResponse.json({ error: "Request too large." }, { status: 413 });
-  const text = await request.text().catch(() => "");
-  if (text.length > MAX_BODY) return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  const text = await readCapped(request, MAX_BODY).catch(() => "");
+  if (text === null) return NextResponse.json({ error: "Request too large." }, { status: 413 });
   let body: Call | Call[];
   try {
     body = JSON.parse(text) as Call | Call[];
