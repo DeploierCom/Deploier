@@ -13,7 +13,7 @@ export const metadata = pageMeta({
 
 const COLORS = [
   ["Night", "#1B1B1B"],
-  ["Mint", "#A3FFD1"],
+  ["Lime", "#E2ED58"],
   ["Paper", "#FFFFFF"],
   ["Mist", "#F5F5F5"],
   ["Violet", "#6D38FF"],
@@ -21,9 +21,9 @@ const COLORS = [
 ];
 
 const LOGOS = [
-  { name: "Mark on night", file: "/brand/deploier-mark.svg", label: "SVG", dark: true, node: <Mark size={96} /> },
-  { name: "Mark on paper", file: "/brand/deploier-mark.svg", label: "SVG", dark: false, node: <Mark size={96} tone="ink" /> },
-  { name: "Mark on plate", file: "/brand/deploier-mark.webp", label: "WebP", dark: false, node: <Mark size={96} plate /> },
+  { name: "Mark on night", file: "/brand/deploier-mark.webp", label: "WebP", dark: true, node: <Mark size={96} /> },
+  { name: "Mark on paper", file: "/brand/deploier-mark-ink.webp", label: "WebP", dark: false, node: <Mark size={96} tone="ink" /> },
+  { name: "Mark on plate", file: "/brand/deploier-mark-plate.webp", label: "WebP", dark: false, node: <Mark size={96} plate /> },
   { name: "Wordmark on night", file: "/icon.png", label: "PNG icon", dark: true, node: <Wordmark size={30} /> },
 ];
 
@@ -68,9 +68,9 @@ export default function BrandPage() {
 
       <Band>
         <Split title={`${BRAND.name} colour guide`}>
-          <p>For press, partners and builders. The palette below is the whole system: one night tone, one mint accent, white and a soft grey, with violet for links.</p>
+          <p>For press, partners and builders. The palette below is the whole system: one night tone, one lime accent taken from the mark, white and a soft grey, with violet for links.</p>
           <div className="pt-[20px]">
-            <Btn href="/brand/deploier-mark.svg" small>
+            <Btn href="/brand/deploier-mark-square.webp" small>
               Download the mark
             </Btn>
           </div>

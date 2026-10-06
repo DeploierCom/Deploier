@@ -1,33 +1,34 @@
 import { BRAND } from "@/config/brand";
 
 /*
- * The Deploier mark: a D whose counter holds one redaction bar, the record the
- * public never reads. Drawn inline so it is crisp at any size. The same
- * geometry is rasterised for the icons and the share card by
- * referensi/tools/make-brand.mjs.
+ * The Deploier mark: the owner's striped lime D. The files in public/brand are
+ * made by referensi/tools/make-brand.mjs from the owner's originals:
+ *   deploier-mark.webp        lime, trimmed, for dark grounds
+ *   deploier-mark-ink.webp    near-black, for white and light grounds (lime on white does not read)
+ *   deploier-mark-white.webp  white, for coloured grounds
+ *   deploier-mark-plate.webp  lime on its #1b1b1b plate, square, for avatars
+ * The trimmed mark is 433x536 (ratio 0.81). `size` is the square box it sits in,
+ * so layouts sized for the earlier square mark keep their spacing.
  */
-
-export const MARK_PATH = "M14 10H32C44.15 10 54 19.85 54 32C54 44.15 44.15 54 32 54H14Z M23 19V45H32C39.18 45 45 39.18 45 32C45 24.82 39.18 19 32 19Z";
-export const MARK_BAR = { x: 23, y: 28.5, w: 17, h: 7 };
 
 type Tone = "accent" | "ink" | "white";
 
-const TONES: Record<Tone, { d: string; bar: string }> = {
-  // On dark grounds: mint letter, white bar.
-  accent: { d: "var(--color-accent)", bar: "#ffffff" },
-  // On white: near-black letter, violet bar.
-  ink: { d: "#1b1b1b", bar: "#6d38ff" },
-  white: { d: "#ffffff", bar: "var(--color-accent)" },
+const SRC: Record<Tone, string> = {
+  accent: "/brand/deploier-mark.webp",
+  ink: "/brand/deploier-mark-ink.webp",
+  white: "/brand/deploier-mark-white.webp",
 };
+const RATIO = 433 / 536;
 
 export function Mark({ size = 28, className = "", plate = false, tone = "accent" }: { size?: number; className?: string; plate?: boolean; tone?: Tone }) {
-  const t = TONES[tone];
+  if (plate) {
+    return <img src="/brand/deploier-mark-plate.webp" alt="" aria-hidden="true" width={size} height={size} className={`shrink-0 rounded-[18%] ${className}`} />;
+  }
+  const h = Math.round(size * 0.72);
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" className={`shrink-0 ${className}`}>
-      {plate ? <rect width="64" height="64" rx="12" fill="#1b1b1b" /> : null}
-      <path d={MARK_PATH} fillRule="evenodd" fill={plate ? "var(--color-accent)" : t.d} />
-      <rect x={MARK_BAR.x} y={MARK_BAR.y} width={MARK_BAR.w} height={MARK_BAR.h} fill={plate ? "#ffffff" : t.bar} />
-    </svg>
+    <span aria-hidden="true" className={`inline-grid shrink-0 place-items-center ${className}`} style={{ width: size, height: size }}>
+      <img src={SRC[tone]} alt="" width={Math.round(h * RATIO)} height={h} style={{ width: Math.round(h * RATIO), height: h }} />
+    </span>
   );
 }
 

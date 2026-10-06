@@ -4,10 +4,17 @@ import { rpc } from "@/lib/feeds/rpc";
 import { commitment } from "@/lib/practice/commit";
 import type { Action, Leg } from "@/lib/practice/tickets";
 import type { AssetClass } from "@/lib/practice/assets";
+import { CHAIN } from "@/config/brand";
+import { CONTRACTS } from "@/config/contracts";
 
 /*
  * The practice desk: private settlements between two wallets and practice
  * issuances of tokenized instruments. Nothing here touches a contract.
+ *
+ * Records come in two modes. "practice": the server keeps the status and the
+ * public tape. "chain": the record only holds the private terms and salt; the
+ * commitment goes on chain (escrow or issuance factory) and the status is read
+ * from the contract, so the server tape never lists it.
  *
  * Every record has two faces:
  *   - the public tape: id, kind, commitment hash, status, time and the Robinhood
@@ -25,14 +32,21 @@ export const RECORD_TTL_SEC = 30 * 24 * 60 * 60;
 
 export type Status = "proposed" | "settled" | "cancelled" | "expired" | "recorded";
 
+export type Mode = "practice" | "chain";
+
 export type Settlement = {
   kind: "settlement";
+  mode?: Mode;
   id: string;
   maker: string;
   taker: string;
   give: Leg;
   get: Leg;
   memo: string;
+  /** Chain mode: unix expiry, escrow address and chain id, all covered by the commitment. */
+  expiry?: number;
+  escrow?: string;
+  chainId?: number;
   salt: string;
   commitment: string;
   status: Status;
@@ -45,6 +59,7 @@ export type Settlement = {
 
 export type Issuance = {
   kind: "issuance";
+  mode?: Mode;
   id: string;
   issuer: string;
   assetClass: AssetClass;
@@ -54,6 +69,8 @@ export type Issuance = {
   faceUsd: string;
   holders: string[];
   maturity: string | null;
+  factory?: string;
+  chainId?: number;
   salt: string;
   commitment: string;
   status: Status;
@@ -69,16 +86,19 @@ const sha = (v: string) => createHash("sha256").update(v).digest("hex");
 const hex = (n: number) => randomBytes(n).toString("hex");
 
 /** Terms covered by a settlement's commitment. */
-export const settlementTerms = (s: Pick<Settlement, "maker" | "taker" | "give" | "get" | "memo">) => ({
+export const settlementTerms = (s: Pick<Settlement, "maker" | "taker" | "give" | "get" | "memo" | "expiry" | "escrow" | "chainId">) => ({
   maker: s.maker,
   taker: s.taker,
   give: s.give,
   get: s.get,
   memo: s.memo,
+  expiry: s.expiry,
+  escrow: s.escrow,
+  chainId: s.chainId,
 });
 
 /** Terms covered by an issuance's commitment. */
-export const issuanceTerms = (i: Pick<Issuance, "issuer" | "assetClass" | "name" | "symbol" | "units" | "faceUsd" | "holders" | "maturity">) => ({
+export const issuanceTerms = (i: Pick<Issuance, "issuer" | "assetClass" | "name" | "symbol" | "units" | "faceUsd" | "holders" | "maturity" | "factory" | "chainId">) => ({
   issuer: i.issuer,
   assetClass: i.assetClass,
   name: i.name,
@@ -87,6 +107,8 @@ export const issuanceTerms = (i: Pick<Issuance, "issuer" | "assetClass" | "name"
   faceUsd: i.faceUsd,
   holders: i.holders,
   maturity: i.maturity,
+  factory: i.factory,
+  chainId: i.chainId,
 });
 
 async function block(): Promise<number | null> {
@@ -98,6 +120,7 @@ async function block(): Promise<number | null> {
 }
 
 function effective<T extends Settlement | Issuance>(r: T): T {
+  if (r.mode === "chain") return r;
   if (r.kind === "settlement" && r.status === "proposed" && Date.now() - r.createdAt > PROPOSAL_TTL_MS) return { ...r, status: "expired" };
   return r;
 }
@@ -124,6 +147,8 @@ export async function openRecord(store: Store, id: string, viewKey: string) {
 }
 
 async function updateTape(store: Store, r: Settlement | Issuance) {
+  // Chain records are on the contract's tape, not this one.
+  if (r.mode === "chain") return;
   const entry: TapeEntry = {
     id: r.id,
     kind: r.kind,
@@ -170,9 +195,11 @@ export async function apply(store: Store, address: string, action: Action): Prom
     const createdBlock = await block();
     let record: Settlement | Issuance;
     if (action.kind === "propose") {
-      const terms = settlementTerms({ maker: who, taker: action.taker, give: action.give, get: action.get, memo: action.memo });
+      const chain = action.expiry ? { expiry: action.expiry, escrow: CONTRACTS.escrow.address.toLowerCase(), chainId: CHAIN.id } : {};
+      const terms = settlementTerms({ maker: who, taker: action.taker, give: action.give, get: action.get, memo: action.memo, ...chain });
       record = {
         kind: "settlement",
+        mode: action.expiry ? "chain" : "practice",
         id,
         ...terms,
         salt,
@@ -185,8 +212,10 @@ export async function apply(store: Store, address: string, action: Action): Prom
         keyHash: sha(viewKey),
       };
     } else {
-      const terms = issuanceTerms({ issuer: who, ...action });
-      record = { kind: "issuance", id, ...terms, salt, commitment: commitment(terms, salt), status: "recorded", createdAt: at, createdBlock, keyHash: sha(viewKey) };
+      const { onchain, kind: _k, ...fields } = action;
+      void _k;
+      const terms = issuanceTerms({ issuer: who, ...fields, ...(onchain ? { factory: CONTRACTS.factory.address.toLowerCase(), chainId: CHAIN.id } : {}) });
+      record = { kind: "issuance", mode: onchain ? "chain" : "practice", id, ...terms, salt, commitment: commitment(terms, salt), status: "recorded", createdAt: at, createdBlock, keyHash: sha(viewKey) };
     }
     await store.setEx(recordKey(id), JSON.stringify(record), RECORD_TTL_SEC);
     await updateTape(store, record);
@@ -199,6 +228,7 @@ export async function apply(store: Store, address: string, action: Action): Prom
   try {
     const r = await readRecord(store, action.id);
     if (!r || r.kind !== "settlement") return { ok: false, error: "Unknown settlement.", status: 404 };
+    if (r.mode === "chain") return { ok: false, error: "This settlement lives in the escrow contract: accept or cancel it with a transaction.", status: 409 };
     if (r.status !== "proposed") return { ok: false, error: `This settlement is already ${r.status}.`, status: 409 };
     if (action.kind === "accept" && who !== r.taker) return { ok: false, error: "Only the named counterparty can accept.", status: 403 };
     if (action.kind === "cancel" && who !== r.maker) return { ok: false, error: "Only the wallet that proposed it can withdraw it.", status: 403 };

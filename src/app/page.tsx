@@ -29,7 +29,7 @@ const NOTES = [
     source: "FAQ",
     date: "Updated 6 October 2026",
     title: "What exists today, and what does not yet",
-    body: "A straight list: the token, the website and the practice desk are here. Audited settlement contracts are not. Read it before you buy anything.",
+    body: "A straight list of what runs, what is written and waiting for deployment, and what is still a design goal. Read it before you buy anything.",
     href: "/faq",
   },
 ];
@@ -177,13 +177,13 @@ export default function HomePage() {
       <DarkRow reverse title="Privacy shaped for regulated desks" art={{ src: "/art/planes-wide.svg" }}>
         <p>
           Banks, brokers and custodians cannot run their books on a chain that publishes client positions. They also cannot use a black box
-          that nobody can inspect. {BRAND.name} aims at the middle: selective disclosure, where a party hands one specific record to an
-          auditor or supervisor without opening anything else.
+          that nobody can inspect. {BRAND.name} aims at the middle: selective disclosure, where a party hands one specific record to a
+          reviewer or supervisor without opening anything else.
         </p>
         <p>
           Per-record view keys, allowlisted holders for tokenized instruments and signed intent in plain words already run on the practice
-          desk. Screening, reporting and jurisdiction rules belong in the audited contracts, where they can be read and tested; until then
-          they are design goals, not features to rely on.
+          desk. Screening, reporting and jurisdiction rules are not in the contracts and are not claimed; for now they are design goals,
+          not features to rely on.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           <TargetTag>Institutional readiness is a target</TargetTag>
@@ -216,7 +216,7 @@ export default function HomePage() {
               },
               {
                 title: "Build on the layer",
-                body: "Design applications that settle with privacy: margin desks, payment rails, issuance tools. Read the record format, the commitment scheme and the contract plan first.",
+                body: "Design applications that settle with privacy: margin desks, payment rails, issuance tools. Read the record format, the commitment scheme and the contracts first.",
                 links: [{ href: "/build", label: "Build" }],
               },
               {

@@ -31,7 +31,7 @@ const c: UseCaseContent = {
     { title: "Recall later", body: "When exposure falls, the reverse settlement returns the collateral the same way." },
   ],
   scenarios: [
-    { title: "Bilateral swaps and options", body: "Two professional counterparties exchanging variation margin directly, with an auditable record each can show its own risk team." },
+    { title: "Bilateral swaps and options", body: "Two professional counterparties exchanging variation margin directly, with a verifiable record each can show its own risk team." },
     { title: "Venue margin accounts", body: "A trading venue collecting margin from members without broadcasting which member just topped up." },
   ],
   today: "On the desk you can propose a margin-style settlement between two of your wallets, accept it and verify the commitment. Collateral does not move in practice mode.",

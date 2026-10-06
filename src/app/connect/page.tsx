@@ -53,7 +53,7 @@ export default function ConnectPage() {
         <Split title={`Connect on ${BRAND.name}`}>
           <p>
             Connecting takes the wallet you already use and points it at {CHAIN.name}. From there you can propose a settlement, accept one,
-            or draft a tokenized instrument, all in practice mode while the audited contracts are prepared.
+            or issue a tokenized instrument: in practice mode until the contracts are deployed, then with real transactions.
           </p>
           <p>
             Phantom lists itself as an EVM wallet but cannot add custom networks, so it appears in the dialog as not supported. Every other

@@ -21,7 +21,7 @@ export const PRINCIPLES: Quote[] = [
     role: "The operator role",
   },
   {
-    text: "Until audited contracts hold real assets, every screen says practice mode. Honesty about what is live is part of the product.",
+    text: "Every screen says whether it is practice or a real transaction. Honesty about what is live is part of the product.",
     by: "Deploier design principle",
     role: "Status of the build",
   },

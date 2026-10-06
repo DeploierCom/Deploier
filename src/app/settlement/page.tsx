@@ -34,7 +34,7 @@ const STEPS = [
     tone: "bg-accent",
     title: "Verify",
     items: [
-      "Either party, or an auditor given the key, recomputes the hash from the terms and salt and checks it against the public entry.",
+      "Either party, or a reviewer given the key, recomputes the hash from the terms and salt and checks it against the public entry.",
       "If one character of the terms had been changed later, the hash would no longer match.",
     ],
   },
@@ -54,7 +54,7 @@ export default function SettlementPage() {
           <p className="max-w-[915px] text-[16px] leading-[24px] text-black">
             The {BRAND.name} settlement layer splits every deal into two parts. {CHAIN.name} supplies the clock, the finality and the assets.{" "}
             {BRAND.name} supplies the discipline that keeps the private and public layers consistent: five steps, each one a signature or a
-            public fact. This is exactly what the practice desk does today, minus the asset transfer that the audited contracts will add.
+            public fact. In practice mode the desk records the agreement; with the escrow deployed, the same steps move the assets.
           </p>
           <div className="mt-4">
             <PracticeTag>Runs in practice mode today</PracticeTag>
@@ -114,9 +114,9 @@ export default function SettlementPage() {
       </Band>
 
       <Band>
-        <h2 className="d-h2 max-w-[915px] text-black">What changes when the contracts ship</h2>
+        <h2 className="d-h2 max-w-[915px] text-black">What changes with the contracts</h2>
         <p className="t-body mt-3 mb-[30px] max-w-[915px] text-black">
-          Practice mode records the agreement. The audited release is meant to move the assets too, atomically: both legs settle in one
+          Practice mode records the agreement. The settlement escrow moves the assets too, atomically: both legs settle in one
           transaction or neither does.
         </p>
         <Cards
@@ -125,13 +125,13 @@ export default function SettlementPage() {
           items={[
             {
               title: "Atomic delivery against payment",
-              body: "An escrow contract would hold both legs and release them together once the counterparty accepts, removing the risk that one side delivers and the other does not.",
+              body: "The escrow holds leg A from the proposal and releases both legs in the same transaction the named counterparty delivers leg B. If any transfer fails, nothing moves.",
             },
-            { title: "Commitments on-chain", body: "The commitment hash would be written to the contract itself, so the public tape is the chain and not a server." },
+            { title: "Commitments on-chain", body: "The commitment is stored in the escrow, the registry or the issued token itself, so the public tape is the chain and not a server." },
             {
               title: "An honest limit",
-              body: `Token transfers on ${CHAIN.name} are visible to everyone. The first contracts keep terms and memos private; hiding amounts on-chain needs a shielded design that is planned separately.`,
-              links: [{ href: "/litepaper#contracts", label: "The contract plan" }],
+              body: `Token transfers on ${CHAIN.name} are visible to everyone. The contracts keep terms and memos private, but the token legs (assets, amounts, wallets) are public like any transfer; hiding amounts needs a shielded design that is a separate project.`,
+              links: [{ href: "/litepaper#contracts", label: "The contracts" }],
             },
           ]}
         />

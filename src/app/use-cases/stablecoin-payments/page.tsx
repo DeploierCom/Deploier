@@ -21,7 +21,7 @@ const c: UseCaseContent = {
     { title: "Payroll stays private", body: "Salaries paid on-chain should not be readable by colleagues or competitors. Each payment is one sealed record." },
     { title: "Supplier terms stay private", body: "What you pay a supplier is a negotiating position. The tape shows that a payment settled, not what it was worth." },
     { title: "Around the clock", body: "Payments clear on Robinhood Chain blocks at any hour, with a final status both sides can verify." },
-    { title: "Proof on request", body: "Hand the view key of one payment to an auditor or a tax authority and prove it without exposing the rest." },
+    { title: "Proof on request", body: "Hand the view key of one payment to an accountant or a tax authority and prove it without exposing the rest." },
   ],
   flowTitle: "An invoice paid privately",
   flow: [
@@ -33,7 +33,7 @@ const c: UseCaseContent = {
     { title: "Issuer and processor networks", body: "Stablecoin payment providers settling merchant batches without exposing merchant volumes." },
     { title: "Cross-border business payments", body: "Firms paying overseas partners at any hour, with a record each side can hand to its bank." },
   ],
-  today: "Run an invoice-and-payment pair on the practice desk with USDG as the payment leg. No USDG moves until the payment contract is deployed and audited.",
+  today: "Run an invoice-and-payment pair on the practice desk with USDG as the payment leg. In practice mode no USDG moves; with the escrow deployed the same pair settles USDG for real, and the amount is public on chain.",
 };
 
 export default function Page() {

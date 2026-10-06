@@ -123,9 +123,9 @@ export default function WhyPage() {
               title: "Built on an existing chain, not a new one",
               body: `${CHAIN.name} already carries tokenized equities, a dollar token (USDG) and the wallets people use. Starting there means no new validator set to trust and no bridge to cross.`,
             },
-            { title: "Disclosure is a choice, record by record", body: "A view key opens exactly one settlement. Handing it to an auditor proves that deal without exposing any other." },
+            { title: "Disclosure is a choice, record by record", body: "A view key opens exactly one settlement. Handing it to a reviewer proves that deal without exposing any other." },
             { title: "Every agreement is signed", body: "Proposals and acceptances are wallet signatures over plain-language terms, so the record of consent is as strong as the keys behind it." },
-            { title: "Honest about what is live", body: "Today the desk runs in practice mode. Audited settlement contracts are the next milestone, and the site will say so plainly until they ship." },
+            { title: "Honest about what is live", body: "Every screen says whether it is in practice mode or sending a real transaction, and the contracts state plainly what they do not hide: token amounts on chain are public." },
           ]}
         />
       </Band>

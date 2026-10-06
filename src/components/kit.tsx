@@ -148,7 +148,7 @@ export function Intro({ children, className = "" }: { children: React.ReactNode;
 
 export type CardItem = { title: React.ReactNode; body: React.ReactNode; links?: { href: string; label: string }[]; kicker?: React.ReactNode };
 
-/** Rounded card grid: grey cards on white, near-black cards with mint links. */
+/** Rounded card grid: grey cards on white, near-black cards with lime links. */
 export function Cards({
   items,
   cols = 3,
@@ -193,7 +193,7 @@ export function Cards({
   );
 }
 
-/** Numbered dark cards: "01" heading, mint sub-title, text, link. */
+/** Numbered dark cards: "01" heading, lime sub-title, text, link. */
 export function NumberCards({ items }: { items: { title: string; body: React.ReactNode; href: string; cta: string }[] }) {
   return (
     <div className="grid grid-cols-1 gap-[15px] md:grid-cols-2 xl:grid-cols-4">
@@ -365,7 +365,7 @@ export function Prose({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Heading, a sub-line and a short list on the left; the mint contact card on the right. */
+/** Heading, a sub-line and a short list on the left; the lime contact card on the right. */
 export function FormSection({
   title,
   tagline,

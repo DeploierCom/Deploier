@@ -8,7 +8,7 @@ export const metadata = pageMeta({
   path: "/litepaper",
   title: "Deploier Litepaper: Private Settlement Design | Deploier",
   description:
-    "The Deploier litepaper: a two-layer design for private settlement on Robinhood Chain, with commitments, view keys, signed intent, the contract plan and risks.",
+    "The Deploier litepaper: a two-layer design for private settlement on Robinhood Chain, with commitments, view keys, signed intent, the contracts and risks.",
   type: "article",
 });
 
@@ -17,7 +17,7 @@ const GUIDE: { title: string; body: string; id: string }[] = [
   { id: "design", title: "Two layers", body: "A private record held by the parties and a public commitment, both anchored to Robinhood Chain blocks rather than a new chain." },
   { id: "commitments", title: "Commitments and view keys", body: "How a salted keccak256 hash proves a deal without revealing it, and how one key discloses one record and nothing else." },
   { id: "intent", title: "Signed intent and lifecycle rules", body: "Plain-language signatures with one-time nonces, one named counterparty, a 24-hour expiry and withdrawal before acceptance." },
-  { id: "contracts", title: "The contract plan and the token", body: "Escrow, issuance and a commitment registry as design goals, and the intended roles of the token once they exist." },
+  { id: "contracts", title: "The contracts and the token", body: "The escrow, the issuance factory and the commitment registry as written, and the intended roles of the token." },
   { id: "risks", title: "Risks, limits and roadmap", body: "Where practice mode depends on one server, what stays public on any chain, and the order in which the pieces ship." },
 ];
 
@@ -29,13 +29,12 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
       <>
         <p>
           {BRAND.name} is a {BRAND.category} on {CHAIN.name}. It separates each settlement into a private record held by the parties
-          and a public commitment that anyone can verify. The goal is settlement that is final and auditable like a public ledger, and
+          and a public commitment that anyone can verify. The goal is settlement that is final and verifiable like a public ledger, and
           confidential like a bilateral agreement.
         </p>
         <p>
-          This paper describes the design as it runs today in practice mode, the contracts planned to make it move real assets, and the
-          risks that remain. It makes no claim that any institution uses {BRAND.name} or that its contracts are audited; they are not
-          deployed yet.
+          This paper describes the design as it runs in practice mode, the contracts that make it move real assets, and the
+          risks that remain. It makes no claim that any institution uses {BRAND.name}.
         </p>
       </>
     ),
@@ -95,7 +94,7 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
       <>
         <p>
           Each record has its own 32-byte view key, given to the creator once. The server keeps only its SHA-256. Presenting the key
-          opens that record and no other. A desk answering an audit request hands over the keys of the trades in question, and nothing
+          opens that record and no other. A desk answering a review request hands over the keys of the trades in question, and nothing
           else about its book becomes visible.
         </p>
       </>
@@ -128,17 +127,20 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
   },
   {
     id: "contracts",
-    title: "8. The contract plan",
+    title: "8. The contracts",
     body: (
       <>
         <p>
-          Three contracts would take the design from practice to production. A settlement escrow holds both legs and releases them
-          together on acceptance, or returns them on expiry. An issuance contract mints an instrument to its allowlist and refuses
-          transfers outside it. A commitment registry records hashes and statuses so the public tape is the chain itself.
+          Three contracts take the design from practice to real assets. SettlementEscrow takes leg A when the maker proposes and
+          releases both legs in the transaction where the named taker delivers leg B; the maker can cancel before that, and after the
+          expiry anyone can return leg A. AllowlistTokenFactory lets any wallet issue a whole-unit token that only allowlisted wallets
+          can hold; the issuing wallet alone manages that list, and a maturity date stops transfers and opens redemption.
+          CommitmentRegistry records hashes and statuses so the public tape is the chain itself.
         </p>
         <p>
-          Design goals for those contracts, not facts about anything live: no upgrade path that lets an admin move user assets, a public
-          audit before deployment, and parameters published in advance.
+          What the code does and does not contain: no owner, no admin key, no pause, no fee and no upgrade path in any of the three;
+          no deposit limits either. Incoming tokens are measured by balance difference and must arrive in full. Their source, tests
+          and a script that checks deployed code byte for byte are published with the site.
         </p>
       </>
     ),
@@ -149,8 +151,8 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          {BRAND.symbol} is the project token on {CHAIN.name}. Its intended roles are operator bonding and settlement fees once the
-          contracts and the operator programme exist. It carries no claim on revenue or assets and is not an investment product. The
+          {BRAND.symbol} is the project token on {CHAIN.name}. Its intended roles are operator bonding and fee discounts once an
+          operator programme exists; the settlement contracts themselves charge no fee and do not use it. It carries no claim on revenue or assets and is not an investment product. The
           contract address will be published on the <Link href="/token" className="link">token page</Link> at launch.
         </p>
       </>
@@ -165,7 +167,8 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
         <li>Losing a view key means losing the ability to open that record; there is no recovery by design.</li>
         <li>Timing and frequency of commitments are public and can leak patterns even when content does not.</li>
         <li>Token transfers on Robinhood Chain are public. A first escrow contract can keep terms and memos private, but hiding amounts on-chain needs a shielded design, which is a larger, separate milestone.</li>
-        <li>Unaudited contracts can hold bugs; none will hold user funds before an audit.</li>
+        <li>Contracts can hold bugs, and these cannot be patched after deployment because there is no upgrade path.</li>
+        <li>Stock tokens can be paused or blocked by their issuer; a settlement involving one then cannot complete until the issuer allows it.</li>
         <li>Regulatory treatment of private settlement differs by jurisdiction and is unresolved.</li>
       </ul>
     ),
@@ -176,8 +179,8 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
     body: (
       <ol>
         <li>Now: website, live chain data, practice desk for settlements and issuances.</li>
-        <li>Next: token launch, contract specification published for review.</li>
-        <li>Then: independent audit, testnet deployment, mainnet escrow with conservative limits.</li>
+        <li>Next: token launch and deployment of the escrow, registry and issuance contracts.</li>
+        <li>Then: integrations that read the on-chain tape, and a shielded design for hidden amounts.</li>
         <li>Later: operator programme, compliance hooks and integrations with custodians.</li>
       </ol>
     ),

@@ -49,7 +49,7 @@ export default function BuildPage() {
       <Hero
         art={{ src: "/art/ribbon.svg", className: "top-[-30px] right-[-40px] h-[calc(100%+30px)] w-auto drift" }}
         title="Ship finance apps that keep a secret"
-        sub={`${BRAND.name} gives builders on ${CHAIN.name} a settlement primitive with privacy in its design: a record format, a commitment scheme and a signing flow that already run on the practice desk. The contracts follow after audit.`}
+        sub={`${BRAND.name} gives builders on ${CHAIN.name} a settlement primitive with privacy in its design: a record format, a commitment scheme and a signing flow that already run on the practice desk. The escrow, registry and issuance contracts are written, tested and published with the source.`}
       >
         <Btn href="/developers" small>
           Developer reference
@@ -97,7 +97,7 @@ export default function BuildPage() {
             },
             {
               title: "Developer reference",
-              body: "The commitment rule, the signed-ticket flow and every endpoint the practice desk calls, with the chain values the planned contracts use.",
+              body: "The commitment rule, the signed-ticket flow and every endpoint the practice desk calls, with the settlement contracts, their functions and events.",
               links: [{ href: "/developers", label: "Developer docs" }],
             },
           ]}
@@ -113,11 +113,11 @@ export default function BuildPage() {
 
       <FormSection title={`Build on ${BRAND.name}`} tagline="Builders deserve a clear picture before they commit time." topic="build">
         <div className="mb-4">
-          <TargetTag>Contracts are planned, not deployed</TargetTag>
+          <TargetTag>Contracts written; addresses appear once deployed</TargetTag>
         </div>
         <ul>
           <li>Available now: the record format, the commitment function, the signed-ticket flow and a public tape API, all exercised by the practice desk.</li>
-          <li>Next: an escrow contract for atomic delivery against payment, an issuance contract with holder allowlists, and an independent audit of both.</li>
+          <li>Contracts: SettlementEscrow for atomic delivery against payment, AllowlistTokenFactory for issuer-managed holder allowlists, CommitmentRegistry for the on-chain tape. See the developers page for functions and events.</li>
           <li>Tell the team what you are building and what the contract interface must support.</li>
         </ul>
       </FormSection>

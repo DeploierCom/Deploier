@@ -90,7 +90,7 @@ export const appLd = {
   url: `${BRAND.url}/app`,
   applicationCategory: "FinanceApplication",
   operatingSystem: "Any (web browser with an EVM wallet)",
-  description: `Private settlement and tokenized-asset issuance on ${CHAIN.name}, run in a signed practice mode until audited contracts are deployed.`,
+  description: `Private settlement and tokenized-asset issuance on ${CHAIN.name}, with signed practice mode and real transactions through the settlement contracts once deployed.`,
   publisher: { "@id": `${BRAND.url}/#org` },
 };
 

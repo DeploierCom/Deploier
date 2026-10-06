@@ -7,9 +7,9 @@ import { breadcrumbLd, faqLd, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
   path: "/faq",
-  title: "Deploier FAQ: Privacy, Network, Token, Audit | Deploier",
+  title: "Deploier FAQ: Privacy, Network, Token, Contracts | Deploier",
   description:
-    "Plain answers about Deploier: what it is, how private settlement works, which network it runs on, how to buy $DEPLOIER and whether it is audited (not yet).",
+    "Plain answers about Deploier: what it is, how private settlement works, which network it runs on, how to buy $DEPLOIER and what the settlement contracts do.",
 });
 
 export default function FaqPage() {

@@ -2,8 +2,8 @@
 
 /*
  * Deploier design tokens.
- * Near-black bands (#1b1b1b) alternate with white sections; one pale mint
- * accent marks every primary action and every link on a dark ground. A wide
+ * Near-black bands (#1b1b1b) alternate with white sections; one lime
+ * accent (sampled from the owner's logo, #e2ed58) marks every primary action and every link on a dark ground. A wide
  * geometric display face sits over a light-weight Inter body. Cards are soft
  * grey with a 16px radius; buttons are full pills.
  *
@@ -34,10 +34,11 @@
   --color-seal: #b8402b;
   --color-seal-soft: rgba(184, 64, 43, 0.1);
 
-  /* The accent: pale mint, used where the eye should land first. */
-  --color-accent: #a3ffd1;
-  --color-accent-2: #86f5be;
-  --color-accent-form: #b8ffdb;
+  /* The accent: the logo's lime, used where the eye should land first.
+     Only as a fill (dark text on it) or on dark grounds; never lime text on white. */
+  --color-accent: #e2ed58;
+  --color-accent-2: #d2de3c;
+  --color-accent-form: #edf39a;
   --color-sky: #a8e2fa;
   --color-coral: #ef8b7a;
 
@@ -558,8 +559,8 @@
   --color-paper-3: #3a3a3a;
   --color-field: #242424;
   --color-field-edge: #5a5a5a;
-  --color-stamp: #a3ffd1;
-  --color-stamp-soft: rgba(163, 255, 209, 0.12);
+  --color-stamp: #e2ed58;
+  --color-stamp-soft: rgba(226, 237, 88, 0.12);
   --color-up: #7fdcae;
   --color-seal: #f0a08f;
   --color-down: #f08d80;
@@ -581,7 +582,7 @@
 
 /* Gradient heading used on the dark asset strip. */
 .grad-text {
-  background-image: linear-gradient(90deg, #00d1ff 0%, #a3ffd1 30%, #cc8aff 70%);
+  background-image: linear-gradient(90deg, #00d1ff 0%, #e2ed58 30%, #cc8aff 70%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

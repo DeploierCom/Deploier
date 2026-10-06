@@ -142,7 +142,7 @@ export default function Page() {
             the size and price kept private.
           </li>
         </ul>
-        <p className="mt-4 text-[14px] text-black/75">No token is minted until the issuance contract is audited and deployed.</p>
+        <p className="mt-4 text-[14px] text-black/75">In practice mode no token is minted. With the issuance factory deployed, the issuing wallet mints the units and manages the allowlist itself; the legal setup behind the asset stays with the issuer.</p>
       </FormSection>
     </>
   );

@@ -78,11 +78,11 @@ export function NodeArt({ labels, seed = 0 }: { labels: [string, string, string,
         <path d={`M${cx - 62} ${cy}H${cx - 44}M${cx + 44} ${cy}H${cx + 62}`} stroke="#c9b6ff" strokeWidth="2" />
         {d ? (
           <>
-            <circle cx={cx} cy={cy - 84} r="24" fill="#a3ffd1" />
+            <circle cx={cx} cy={cy - 84} r="24" fill="#e2ed58" />
             <text x={cx} y={cy - 80} fill="#000" fontSize="10">
               {d}
             </text>
-            <path d={`M${cx} ${cy - 60}V${cy - 44}`} stroke="#a3ffd1" strokeWidth="2" />
+            <path d={`M${cx} ${cy - 60}V${cy - 44}`} stroke="#e2ed58" strokeWidth="2" />
           </>
         ) : null}
       </g>
@@ -130,7 +130,7 @@ export function LayerStack() {
             {[
               ["Maker desk", "signs the proposal"],
               ["Counterparty", "signs acceptance"],
-              ["Auditor", "holds one view key"],
+              ["Reviewer", "holds one view key"],
               ["Public", "reads the tape"],
             ].map(([n, d]) => (
               <div key={n} className="min-w-0 text-center">

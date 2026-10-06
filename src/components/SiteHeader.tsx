@@ -18,7 +18,7 @@ function Caret({ open = false }: { open?: boolean }) {
   );
 }
 
-/** Desktop dropdown: a mint panel of plain links under the label. */
+/** Desktop dropdown: a lime panel of plain links under the label. */
 function Dropdown({ group, isActive }: { group: NavGroup; isActive: (href: string) => boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

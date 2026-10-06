@@ -17,6 +17,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local fork-test build and the vendored Solidity libraries / build output.
+    ".next-local/**",
+    "contracts/lib/**",
+    "contracts/out/**",
+    "contracts/cache/**",
   ]),
 ]);
 

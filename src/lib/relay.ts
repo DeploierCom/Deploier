@@ -1,5 +1,6 @@
 import { BRAND, PONS, USDG, WETH, isAddress } from "@/config/brand";
 import { STOCKS } from "@/config/stocks";
+import { CONTRACTS } from "@/config/contracts";
 
 /*
  * Rules for the read-only JSON-RPC relay, kept apart from the route so they
@@ -28,6 +29,7 @@ export const COST: Record<string, number> = {
 export function readTargets() {
   const list = [USDG.address, WETH, PONS.factory, PONS.v4Quoter, PONS.memeHook, ...STOCKS.map((s) => s.token), ...STOCKS.map((s) => s.feed)];
   if (isAddress(BRAND.ca)) list.push(BRAND.ca);
+  for (const c of Object.values(CONTRACTS)) if (c.address) list.push(c.address);
   return new Set(list.map((a) => a.toLowerCase()));
 }
 

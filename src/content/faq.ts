@@ -28,30 +28,30 @@ export const FAQ: { q: string; a: string[] }[] = [
     ],
   },
   {
-    q: `Is ${BRAND.name} audited?`,
+    q: `Which contracts does ${BRAND.name} use?`,
     a: [
-      "Not yet. No settlement contract has been deployed, so there is nothing to audit on-chain today. The practice desk runs off-chain and moves no funds.",
-      "An independent audit is a precondition for deploying the settlement and issuance contracts. Its report will be linked from this page when it exists.",
+      "Three, with the source published: SettlementEscrow (delivery versus payment between two named wallets), CommitmentRegistry (a public tape of commitments) and AllowlistTokenFactory (tokens only allowlisted wallets can hold, managed by the wallet that issues them).",
+      "None of them has an owner, an admin key, a pause switch, a fee or an upgrade path. Their addresses appear on the developers page once deployed; until then the desk runs in practice mode.",
     ],
   },
   {
     q: "What works today and what does not?",
     a: [
-      "Working now: wallet connection, live Robinhood Chain data, live prices for the tokenized stocks, and the practice desk for private settlements and practice issuances with real wallet signatures.",
-      "Not built yet: contracts that move assets, on-chain commitments, the operator network and any compliance integration.",
+      "Working now: wallet connection, live Robinhood Chain data, live prices for the tokenized stocks, and the desk for private settlements and issuances with real wallet signatures.",
+      "Written and tested: the escrow, registry and issuance contracts. Each switches its part of the desk to real transactions once deployed. Not built: the operator network, hidden amounts and any compliance integration.",
     ],
   },
   {
     q: "Is it really private in practice mode?",
     a: [
       "The public tape on the desk never shows parties, assets or amounts. Private records are stored by the site's server and opened only with their view key, whose hash is all the server keeps.",
-      "Practice mode still relies on that server. The audited release is designed to remove that dependency by anchoring commitments in a contract.",
+      "Practice mode relies on that server for status. With the contracts deployed, status and commitments are read from the chain; the server keeps only the private terms, hash-locked by view key.",
     ],
   },
   {
     q: "Can institutions use it?",
     a: [
-      "Banks, brokers, custodians, payment providers and asset issuers are the users the design targets. None use it today, and no institution has endorsed it. Regulated use would need the audited contracts, legal review and compliance controls that are still on the roadmap.",
+      "Banks, brokers, custodians, payment providers and asset issuers are the users the design targets. None use it today, and no institution has endorsed it. Regulated use would need legal review and compliance controls of each institution's own, which are not part of the contracts.",
     ],
   },
   {

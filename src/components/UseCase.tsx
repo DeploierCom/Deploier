@@ -1,4 +1,5 @@
 import { CHAIN, USDG } from "@/config/brand";
+import { escrowLive } from "@/config/contracts";
 import { STOCKS } from "@/config/stocks";
 import { JsonLd } from "@/components/JsonLd";
 import { Accordion, AssetStrip, Band, Btn, Cards, FormSection, Hero, LearnCards, SkyBand, type Art } from "@/components/kit";
@@ -64,7 +65,7 @@ export function UseCasePage({ c }: { c: UseCaseContent }) {
       <SkyBand title={`Get started on ${CHAIN.name} today`} action={<Btn href="/app" tone="ink">Open the practice desk</Btn>}>
         <p>{c.today}</p>
         <p>
-          <PracticeTag>Practice mode until audited contracts ship</PracticeTag>
+          {escrowLive() ? <PracticeTag>Real transactions through the escrow; practice mode stays available</PracticeTag> : <PracticeTag>Practice mode until the contracts are deployed</PracticeTag>}
         </p>
       </SkyBand>
 

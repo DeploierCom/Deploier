@@ -71,7 +71,7 @@ export default function RunPage() {
               {[
                 ["Relay", `Pass signed proposals and acceptances to the settlement contract on ${CHAIN.name} and report the resulting block.`],
                 ["Store sealed records", "Hold encrypted private records for parties who want redundancy, readable only with the view key."],
-                ["Publish the tape", "Serve the public list of commitments and statuses so anyone can audit what the layer has settled."],
+                ["Publish the tape", "Serve the public list of commitments and statuses so anyone can check what the layer has settled."],
                 ["Raise the alarm", "Flag a commitment that does not match the contract state, or a relay that stops answering."],
               ].map(([t, b]) => (
                 <li key={t} className="border-l-[3px] border-accent pl-[17px]">

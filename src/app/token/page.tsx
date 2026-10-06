@@ -76,7 +76,7 @@ export default function TokenPage() {
           minH={200}
           items={[
             { title: "Operator bonding", body: "Operators who relay settlements would bond tokens as a guarantee of good behaviour. Planned with the operator programme." },
-            { title: "Settlement fees", body: "Fees on settled records could be paid or discounted in the token. Planned with the audited contracts." },
+            { title: "Settlement fees", body: "Fees on settled records could be paid or discounted in the token. Not part of the settlement contracts: they charge no fee today." },
             { title: "Community", body: "The token gives early supporters a stake in the project's direction while the layer is built in public." },
           ]}
         />

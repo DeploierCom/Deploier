@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { escrowLive } from "@/config/contracts";
 import { BRAND, CHAIN, hasGithub } from "@/config/brand";
 import { CopyCaBlock } from "@/components/CopyCa";
 import { Wordmark } from "@/components/Mark";
@@ -66,8 +67,9 @@ export function SiteFooter() {
         </div>
         <div className="mt-[70px] flex flex-col gap-4 text-[12px] leading-[18px] lg:flex-row lg:items-end lg:justify-between max-md:mt-12">
           <p className="max-w-[560px] text-white/60">
-            {BRAND.symbol} is a token on {CHAIN.name} (chain id {CHAIN.id}). Not an offer of securities. Settlement features run in practice
-            mode until audited contracts ship.
+            {BRAND.symbol} is a token on {CHAIN.name} (chain id {CHAIN.id}). Not an offer of securities. {escrowLive()
+              ? " Settlements in the desk move real assets through the settlement escrow; token amounts on chain are public."
+              : " Settlement features run in practice mode until the settlement contracts are deployed."}
           </p>
           <div className="flex flex-wrap items-center gap-x-[22px] gap-y-2 text-white">
             <span>

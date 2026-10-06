@@ -4,7 +4,8 @@ import { getStore } from "@/lib/auth/store";
 import { rpcBatch } from "@/lib/feeds/rpc";
 import { clientIp, trustsProxyHeaders } from "@/lib/netkey";
 import { spend } from "@/lib/ratelimit";
-import { BUDGET, MAX_BODY, checkBatch, type Call } from "@/lib/relay";
+import { BUDGET, MAX_BODY, checkBatch, readTargets, type Call } from "@/lib/relay";
+import { factoryTokens } from "@/lib/onchain/known";
 
 export const dynamic = "force-dynamic";
 
@@ -26,17 +27,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
   const calls = Array.isArray(body) ? body : [body];
-  const checked = checkBatch(calls);
-  if ("error" in checked) return NextResponse.json({ error: checked.error }, { status: 400 });
+  // First pass with every call target allowed, to price the request and check its shape.
+  const targets = readTargets();
+  const callTargets = calls.flatMap((c) => {
+    const to = c?.method === "eth_call" && Array.isArray(c.params) ? (c.params[0] as { to?: unknown } | undefined)?.to : undefined;
+    return typeof to === "string" ? [to.toLowerCase()] : [];
+  });
+  const priced = checkBatch(calls, new Set([...targets, ...callTargets]));
+  if ("error" in priced) return NextResponse.json({ error: priced.error }, { status: 400 });
 
   const store = getStore();
-  if (!(await spend(store, "rpc", clientIp(request), checked.units, BUDGET.units, BUDGET.windowSec, { aggregate: true }))) {
+  if (!(await spend(store, "rpc", clientIp(request), priced.units, BUDGET.units, BUDGET.windowSec, { aggregate: true }))) {
     return NextResponse.json({ error: "Too many chain reads from your network. Slow down a little." }, { status: 429 });
   }
   // Without trusted proxy headers everyone shares one key; a site-wide ceiling applies too.
-  if (!trustsProxyHeaders() && !(await spend(store, "rpc-site", "all", checked.units, BUDGET.siteUnits, BUDGET.windowSec))) {
+  if (!trustsProxyHeaders() && !(await spend(store, "rpc-site", "all", priced.units, BUDGET.siteUnits, BUDGET.windowSec))) {
     return NextResponse.json({ error: "The relay is busy. Try again shortly." }, { status: 429 });
   }
+  // Tokens issued through the Deploier factory are readable too, once the factory confirms them (after the budget is spent).
+  for (const t of await factoryTokens(calls, targets)) targets.add(t);
+  const checked = checkBatch(calls, targets);
+  if ("error" in checked) return NextResponse.json({ error: checked.error }, { status: 400 });
   try {
     const results = await rpcBatch<unknown>(calls.map((c) => ({ method: c.method, params: c.params ?? [] })));
     const out = calls.map((c, i) =>

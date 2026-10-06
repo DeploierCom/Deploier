@@ -2,7 +2,8 @@ import { randomBytes } from "node:crypto";
 import { BRAND, CHAIN, isAddress } from "@/config/brand";
 import type { Store } from "@/lib/auth/store";
 import { recoverSigner } from "@/lib/auth/verify";
-import { classLabel, isAsset, isAssetClass, parseAmount, type AssetClass, type AssetId } from "@/lib/practice/assets";
+import { CONTRACTS, ESCROW_MAX_TERM_S, escrowLive, factoryLive } from "@/config/contracts";
+import { assetById, classLabel, isAsset, isAssetClass, parseAmount, toUnits, type AssetClass, type AssetId } from "@/lib/practice/assets";
 
 /*
  * Signed practice tickets. The server writes the exact text of an action,
@@ -15,7 +16,7 @@ import { classLabel, isAsset, isAssetClass, parseAmount, type AssetClass, type A
 export type Leg = { asset: AssetId; amount: string };
 
 export type Action =
-  | { kind: "propose"; taker: string; give: Leg; get: Leg; memo: string }
+  | { kind: "propose"; taker: string; give: Leg; get: Leg; memo: string; expiry?: number }
   | { kind: "accept"; id: string }
   | { kind: "cancel"; id: string }
   | {
@@ -27,6 +28,7 @@ export type Action =
       faceUsd: string;
       holders: string[];
       maturity: string | null;
+      onchain?: boolean;
     };
 
 const TTL = 5 * 60;
@@ -55,7 +57,18 @@ export function parseAction(raw: Raw, from: string): Action | { error: string } 
       const get = leg(raw.get);
       if (!give || !get) return { error: "Each leg needs an asset and an amount above zero (up to 6 decimals)." };
       if (give.asset === get.asset) return { error: "The two legs must be different assets." };
-      return { kind: "propose", taker: taker.toLowerCase(), give, get, memo: text(raw.memo, 80) };
+      const base = { kind: "propose" as const, taker: taker.toLowerCase(), give, get, memo: text(raw.memo, 80) };
+      if (raw.onchain !== true) return base;
+      // On-chain proposal: the escrow must be deployed, the expiry sane, and both amounts representable in token units.
+      if (!escrowLive()) return { error: "The settlement escrow is not deployed yet." };
+      const now = Math.floor(Date.now() / 1000);
+      const expiry = typeof raw.expiry === "number" && Number.isInteger(raw.expiry) ? raw.expiry : 0;
+      if (expiry < now + 300 || expiry > now + ESCROW_MAX_TERM_S - 300) return { error: "Pick an expiry between 5 minutes and 30 days from now." };
+      for (const l of [give, get]) {
+        const a = assetById(l.asset);
+        if (!a || toUnits(l.amount, a.decimals) === null) return { error: `${l.asset} takes at most ${a?.decimals ?? 0} decimals.` };
+      }
+      return { ...base, expiry };
     }
     case "accept":
     case "cancel": {
@@ -79,6 +92,11 @@ export function parseAction(raw: Raw, from: string): Action | { error: string } 
       const m = typeof raw.maturity === "string" && raw.maturity ? raw.maturity : null;
       if (m !== null && (!/^\d{4}-\d{2}-\d{2}$/.test(m) || Number.isNaN(Date.parse(`${m}T00:00:00Z`)))) return { error: "Maturity must be a date." };
       if (m !== null && Date.parse(`${m}T00:00:00Z`) < Date.now() - 86_400_000) return { error: "Maturity cannot be in the past." };
+      if (raw.onchain === true) {
+        if (!factoryLive()) return { error: "The issuance contract is not deployed yet." };
+        if (m !== null && Date.parse(`${m}T00:00:00Z`) <= Date.now() + 3_600_000) return { error: "An on-chain maturity must be a future date." };
+        return { kind: "issue", assetClass: raw.assetClass, name, symbol, units, faceUsd, holders, maturity: m, onchain: true };
+      }
       return { kind: "issue", assetClass: raw.assetClass, name, symbol, units, faceUsd, holders, maturity: m };
     }
     default:
@@ -92,14 +110,24 @@ const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 export function describeAction(a: Action): string {
   switch (a.kind) {
     case "propose":
-      return `Propose a private settlement with ${short(a.taker)}: I deliver ${a.give.amount} ${a.give.asset} and receive ${a.get.amount} ${a.get.asset}.`;
+      return `Propose a private settlement with ${short(a.taker)}: I deliver ${a.give.amount} ${a.give.asset} and receive ${a.get.amount} ${a.get.asset}.${
+        a.expiry ? ` Open on chain until ${new Date(a.expiry * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC.` : ""
+      }`;
     case "accept":
       return `Accept private settlement ${a.id} and mark it settled.`;
     case "cancel":
       return `Withdraw my proposal for private settlement ${a.id}.`;
     case "issue":
-      return `Record a practice issuance: ${a.units} units of ${a.symbol} (${a.name}, ${classLabel(a.assetClass)}) at $${a.faceUsd} face value, held only by ${a.holders.length} allowlisted address${a.holders.length === 1 ? "" : "es"}.`;
+      return `${a.onchain ? "Issue on chain" : "Record a practice issuance"}: ${a.units} units of ${a.symbol} (${a.name}, ${classLabel(a.assetClass)}) at $${a.faceUsd} face value, held only by ${a.holders.length} allowlisted address${a.holders.length === 1 ? "" : "es"}.`;
   }
+}
+
+function onchainNote(a: Action) {
+  if (a.kind === "propose" && a.expiry)
+    return `On chain: after this free signature your wallet sends the proposal to the escrow ${CONTRACTS.escrow.address} and leg A is locked there. The terms stay private; the legs themselves are public on ${CHAIN.name}.`;
+  if (a.kind === "issue" && a.onchain)
+    return `On chain: after this free signature your wallet sends the issuance to the factory ${CONTRACTS.factory.address}. Name, symbol, units, maturity and allowlist are public; the rest of the terms stay private.`;
+  return "Practice mode: no funds move and no transaction is sent.";
 }
 
 const hex = (bytes: Uint8Array) => Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
@@ -111,7 +139,7 @@ export async function issueTicket(store: Store, address: string, action: Action,
     "",
     describeAction(action),
     "",
-    "Practice mode: no funds move and no transaction is sent.",
+    onchainNote(action),
     "",
     `Wallet: ${address}`,
     `Chain ID: ${CHAIN.id}`,
