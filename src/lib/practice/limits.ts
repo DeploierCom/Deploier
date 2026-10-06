@@ -18,3 +18,9 @@ export async function allowTicket(store: Store, network: string, claimed: string
 
 /** First practice action of a new wallet: a few per network (and per /24 or /48) a day. */
 export const allowNewWallet = (store: Store, network: string) => spend(store, "new-wallet-net", network, 1, 5, 86_400, { aggregate: true });
+
+/** New records (proposals and issuances) after the signature: per network and per proven wallet, each a day. */
+export async function allowCreate(store: Store, network: string, wallet: string) {
+  if (!(await spend(store, "create-net", network, 1, 30, 86_400, { aggregate: true }))) return false;
+  return spend(store, "create-wallet", wallet.toLowerCase(), 1, 20, 86_400);
+}

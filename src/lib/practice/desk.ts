@@ -20,6 +20,8 @@ import type { AssetClass } from "@/lib/practice/assets";
 export const PROPOSAL_TTL_MS = 24 * 60 * 60 * 1000;
 const TAPE = "practice:tape";
 const TAPE_KEEP = 60;
+/** Practice records expire so the store cannot grow without bound. */
+export const RECORD_TTL_SEC = 30 * 24 * 60 * 60;
 
 export type Status = "proposed" | "settled" | "cancelled" | "expired" | "recorded";
 
@@ -186,7 +188,7 @@ export async function apply(store: Store, address: string, action: Action): Prom
       const terms = issuanceTerms({ issuer: who, ...action });
       record = { kind: "issuance", id, ...terms, salt, commitment: commitment(terms, salt), status: "recorded", createdAt: at, createdBlock, keyHash: sha(viewKey) };
     }
-    await store.set(recordKey(id), JSON.stringify(record));
+    await store.setEx(recordKey(id), JSON.stringify(record), RECORD_TTL_SEC);
     await updateTape(store, record);
     return { ok: true, id, viewKey, status: record.status, commitment: record.commitment };
   }
@@ -201,7 +203,7 @@ export async function apply(store: Store, address: string, action: Action): Prom
     if (action.kind === "accept" && who !== r.taker) return { ok: false, error: "Only the named counterparty can accept.", status: 403 };
     if (action.kind === "cancel" && who !== r.maker) return { ok: false, error: "Only the wallet that proposed it can withdraw it.", status: 403 };
     const next: Settlement = { ...r, status: action.kind === "accept" ? "settled" : "cancelled", closedAt: Date.now(), closedBlock: await block() };
-    await store.set(recordKey(r.id), JSON.stringify(next));
+    await store.setEx(recordKey(r.id), JSON.stringify(next), RECORD_TTL_SEC);
     await updateTape(store, next);
     return { ok: true, id: r.id, status: next.status, commitment: r.commitment };
   } finally {
