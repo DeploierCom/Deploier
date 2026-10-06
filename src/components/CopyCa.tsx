@@ -44,9 +44,9 @@ export function CopyCaTag({ className = "", compact = false }: { className?: str
       title={live ? `Copy ${BRAND.ca}` : "The contract address is published at launch"}
       aria-label={live ? "Copy contract address" : "Contract address not published yet"}
       data-testid="ca-tag"
-      className={`flex h-[34px] shrink-0 cursor-pointer items-center gap-2 border border-ink bg-transparent px-2.5 text-[14px] font-medium text-ink transition-colors enabled:hover:bg-ink enabled:hover:text-paper disabled:cursor-default disabled:border-line-2 disabled:text-ink-3 ${className}`}
+      className={`flex h-[41px] shrink-0 cursor-pointer items-center gap-2 rounded-full border border-ink/70 bg-transparent pr-3.5 pl-[5px] text-[14px] font-medium text-ink transition-colors enabled:hover:border-ink enabled:hover:bg-ink enabled:hover:text-paper disabled:cursor-default disabled:border-line-2 disabled:text-ink-3 max-[560px]:pr-[5px] ${className}`}
     >
-      <span className="bg-stamp px-[5px] pt-[3px] pb-[2px] font-mono text-[10px] leading-none font-semibold tracking-[0.08em] text-paper uppercase">
+      <span className="rounded-full bg-stamp px-[9px] py-[7px] text-[11px] leading-none font-semibold tracking-[0.04em] text-paper uppercase">
         <span className="hidden sm:inline">{BRAND.symbol}</span>
         <span className="sm:hidden">CA</span>
       </span>
@@ -66,7 +66,7 @@ export function CopyCaBlock({ className = "" }: { className?: string; tone?: "pa
   const { copied, copy, live } = useCopyCa();
   return (
     <div
-      className={`grid max-w-[640px] grid-cols-[auto_minmax(0,1fr)_auto] border border-ink bg-paper-2 text-ink [grid-template-areas:'k_a_a'_'c_c_x'] ${className}`}
+      className={`grid max-w-[640px] grid-cols-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-[16px] border border-line-2 bg-paper-2 text-ink [grid-template-areas:'k_a_a'_'c_c_x'] ${className}`}
     >
       <span className="border-r border-line-2 px-3.5 py-[13px] text-[14px] whitespace-nowrap text-ink-2 [grid-area:k] max-[900px]:px-2.5 max-[900px]:py-3 max-[900px]:text-[13px]">
         {BRAND.symbol}
@@ -81,7 +81,7 @@ export function CopyCaBlock({ className = "" }: { className?: string; tone?: "pa
         type="button"
         onClick={copy}
         disabled={!live}
-        className="flex cursor-pointer items-center justify-center gap-2 border-t border-ink bg-ink px-[18px] py-[13px] text-[14px] font-medium text-paper transition-colors [grid-area:c] enabled:hover:bg-stamp disabled:cursor-not-allowed disabled:bg-paper-3 disabled:text-ink-3"
+        className="flex cursor-pointer items-center justify-center gap-2 border-t border-line-2 bg-accent px-[18px] py-[13px] text-[14px] font-medium text-black transition-colors [grid-area:c] enabled:hover:bg-accent-2 disabled:cursor-not-allowed disabled:bg-paper-3 disabled:text-ink-3"
         data-testid="ca-copy"
       >
         {copied ? <Check className="size-4" strokeWidth={2.5} /> : null}
@@ -92,12 +92,12 @@ export function CopyCaBlock({ className = "" }: { className?: string; tone?: "pa
           href={TOKEN.explorerUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center justify-center border-t border-l border-ink px-[18px] py-[13px] text-[14px] whitespace-nowrap text-ink-2 [grid-area:x] hover:text-stamp"
+          className="flex items-center justify-center border-t border-l border-line-2 px-[18px] py-[13px] text-[14px] whitespace-nowrap text-ink-2 [grid-area:x] hover:text-stamp"
         >
           Explorer ↗
         </a>
       ) : (
-        <span className="flex items-center justify-center border-t border-l border-ink px-[18px] py-[13px] text-[14px] whitespace-nowrap text-ink-3 [grid-area:x]">
+        <span className="flex items-center justify-center border-t border-l border-line-2 px-[18px] py-[13px] text-[14px] whitespace-nowrap text-ink-3 [grid-area:x]">
           Explorer ↗
         </span>
       )}

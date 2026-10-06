@@ -7,24 +7,18 @@ import { BRAND } from "@/config/brand";
 import { CopyCaTag } from "@/components/CopyCa";
 import { Wordmark } from "@/components/Mark";
 import { NAV, isGroup, type NavGroup } from "@/components/site";
-import { useChain } from "@/components/providers/ChainProvider";
 import { NavWallet } from "@/components/wallet/WalletButton";
+import { useWallet } from "@/components/wallet/WalletProvider";
 
-/** Latest Robinhood Chain block, read live. */
-function ChainStatus() {
-  const { facts, failed } = useChain();
-  const live = Boolean(facts?.block) && !failed;
+function Caret({ open = false }: { open?: boolean }) {
   return (
-    <span
-      className={`hidden items-center gap-2 font-mono text-[12px] whitespace-nowrap tabular-nums min-[1320px]:inline-flex ${failed ? "text-down" : "text-ink-3"}`}
-      title={live ? "Reading Robinhood Chain live" : failed ? "Chain read failed, retrying" : "Connecting to Robinhood Chain"}
-    >
-      <span className={`size-1.5 ${live ? "pulse bg-up" : failed ? "bg-down" : "bg-ink-3"}`} />
-      <span data-testid="tape-block">{failed ? "chain read failed" : facts?.block ? `#${facts.block.toLocaleString("en-US")}` : "connecting…"}</span>
-    </span>
+    <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true" className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
+      <path d="M1 1.5L5 5.5L9 1.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
+/** Desktop dropdown: a mint panel of plain links under the label. */
 function Dropdown({ group, isActive }: { group: NavGroup; isActive: (href: string) => boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -39,78 +33,113 @@ function Dropdown({ group, isActive }: { group: NavGroup; isActive: (href: strin
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
-  const active = group.items.some((i) => isActive(i.href));
   return (
-    <div ref={ref} className="relative inline-flex" onMouseLeave={() => setOpen(false)}>
+    <div ref={ref} className="relative" onMouseLeave={() => setOpen(false)}>
       <button
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         onMouseEnter={() => window.matchMedia("(hover: hover)").matches && setOpen(true)}
-        className={`flex cursor-pointer items-center gap-1.5 border-b py-1 whitespace-nowrap transition-colors hover:text-ink ${active ? "border-ink text-ink" : "border-transparent text-ink-2"}`}
+        className="flex cursor-pointer items-center gap-[10px] px-[15px] text-[16px] leading-[24px] font-bold whitespace-nowrap text-white transition-colors hover:text-accent"
       >
         {group.label}
-        <svg width="9" height="6" viewBox="0 0 9 6" aria-hidden="true" className={`transition-transform ${open ? "rotate-180" : ""}`}>
-          <path d="M1 1l3.5 3.5L8 1" fill="none" stroke="currentColor" strokeWidth="1.4" />
-        </svg>
+        <Caret open={open} />
       </button>
-      {open ? <span className="absolute top-full right-[-16px] left-[-16px] h-[22px]" /> : null}
+      {open ? <span className="absolute top-full right-0 left-0 h-[30px]" /> : null}
       {open ? (
-        <div className="sheet absolute top-[calc(100%+14px)] left-[-16px] z-40 w-[300px] py-1">
-          {group.items.map((item, i) => {
-            const here = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={here ? "page" : undefined}
-                onClick={() => setOpen(false)}
-                className={`block px-4 py-2.5 text-ink transition-colors hover:bg-paper-2 ${i ? "border-t border-line" : ""}`}
-              >
-                <span className={`block text-[15px] leading-tight font-medium ${here ? "text-stamp" : ""}`}>{item.label}</span>
-                {item.note ? <span className="mt-0.5 block text-[13px] text-ink-3">{item.note}</span> : null}
-              </Link>
-            );
-          })}
+        <div className="absolute top-[calc(100%+28px)] left-[-62px] z-40 w-[330px] rounded-[16px] bg-accent px-[30px] py-[22px] shadow-[rgba(0,0,0,0.07)_0_0_80px_0]">
+          <ul className="flex flex-col gap-[17px]">
+            {group.items.map((item) => {
+              const here = isActive(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={here ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                    className={`block text-[16px] leading-[20px] text-black transition-opacity hover:opacity-70 ${here ? "font-semibold" : ""}`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       ) : null}
     </div>
   );
 }
 
+/** Full-screen phone menu: big rows, each group opens its own panel with a Back link. */
 function MobileMenu({ isActive, onClose }: { isActive: (href: string) => boolean; onClose: () => void }) {
+  const [panel, setPanel] = useState<NavGroup | null>(null);
+  const row = "flex w-full items-center justify-between border-b border-[#333] py-[20px] text-left text-[24px] leading-[26px] font-bold text-white";
   return (
-    <div className="absolute inset-x-0 top-full z-40 max-h-[calc(100dvh-64px)] overflow-y-auto border-b border-ink bg-paper">
-      <nav aria-label="Mobile" className="wrap grid grid-cols-1 gap-x-8 gap-y-6 py-6 sm:grid-cols-2">
-        {NAV.map((entry) =>
-          isGroup(entry) ? (
-            <div key={entry.label}>
-              <p className="eyebrow">{entry.label}</p>
-              <ul className="mt-2">
-                {entry.items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={onClose}
-                      className={`block border-b border-line py-2 text-[16px] ${isActive(item.href) ? "text-stamp" : "text-ink"}`}
-                    >
-                      {item.label}
+    <div role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-0 z-[60] overflow-y-auto bg-black text-white">
+      <div className="ctn flex h-[var(--header-h)] items-center justify-between">
+        <Link href="/" onClick={onClose} aria-label={`${BRAND.name} home`}>
+          <Wordmark size={24} />
+        </Link>
+        <button type="button" aria-label="Close menu" onClick={onClose} className="grid size-10 cursor-pointer place-items-center text-white">
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+            <path d="M2 2l18 18M20 2L2 20" stroke="currentColor" strokeWidth="1.8" />
+          </svg>
+        </button>
+      </div>
+      <nav aria-label="Mobile" className="ctn pb-12">
+        {panel ? (
+          <div>
+            <button type="button" onClick={() => setPanel(null)} className="flex cursor-pointer items-center gap-3 py-3 pl-1 text-[14px] font-bold">
+              <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true">
+                <path d="M7 1L1 7l6 6M1 7h16" fill="none" stroke="currentColor" strokeWidth="2" />
+              </svg>
+              Back
+            </button>
+            <ul className="pl-5">
+              {panel.items.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className={`block border-b border-[#333] py-[13px] text-[20px] leading-[24px] ${isActive(item.href) ? "text-accent" : "text-white"}`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+            <ul className="border-t border-[#333]">
+              {NAV.map((entry) =>
+                isGroup(entry) ? (
+                  <li key={entry.label}>
+                    <button type="button" onClick={() => setPanel(entry)} className={`${row} cursor-pointer`}>
+                      {entry.label}
+                      <Caret />
+                    </button>
+                  </li>
+                ) : (
+                  <li key={entry.href}>
+                    <Link href={entry.href} onClick={onClose} className={row}>
+                      {entry.label}
                     </Link>
                   </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div key={entry.href}>
-              <p className="eyebrow">Docs</p>
-              <Link href={entry.href} onClick={onClose} className="mt-2 block border-b border-line py-2 text-[16px] text-ink">
-                {entry.label}
+                ),
+              )}
+            </ul>
+            <div className="mt-[46px] flex flex-col items-center gap-3">
+              <Link href="/app" onClick={onClose} className="btn btn-accent btn-sm w-full max-w-[340px]">
+                Open the practice desk
               </Link>
-              <Link href="/app" onClick={onClose} className="block border-b border-line py-2 text-[16px] text-ink">
-                Practice desk
+              <Link href="/contact" onClick={onClose} className="btn btn-ghost btn-sm w-full max-w-[340px] !border-white !text-white">
+                Talk to the team
               </Link>
             </div>
-          ),
+          </>
         )}
       </nav>
     </div>
@@ -120,28 +149,31 @@ function MobileMenu({ isActive, onClose }: { isActive: (href: string) => boolean
 export function SiteHeader() {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
-  const [solid, setSolid] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { address } = useWallet();
   useEffect(() => {
     if (!menu) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
   }, [menu]);
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   return (
     // No backdrop-filter here: it would trap fixed-position dialogs inside the header.
-    <header className={`sticky top-0 z-30 border-b border-ink bg-[var(--nav-bg)] transition-shadow ${solid ? "shadow-[0_6px_24px_var(--shade)]" : ""}`}>
-      <div data-testid="navrow" className="wrap wrap-wide flex h-16 items-center gap-6 max-[1180px]:gap-4 max-[560px]:gap-2">
+    <header className="night sticky top-0 z-30 bg-board">
+      <div data-testid="navrow" className="ctn flex h-[var(--header-h)] items-center gap-4 max-[560px]:gap-2">
         <Link href="/" aria-label={`${BRAND.name} home`} className="shrink-0">
-          <Wordmark size={24} className="max-[400px]:[&>span]:!text-[23px]" />
+          <Wordmark
+            size={30}
+            // Once a wallet chip sits in the bar, small phones keep the mark and drop the name to make room.
+            className={`max-[1199.98px]:!text-[24px] max-[400px]:!text-[21px] ${address ? "max-[440px]:[&>span:last-child]:hidden" : ""}`}
+          />
         </Link>
-        <nav aria-label="Main" className="ml-4 hidden items-center gap-6 text-[15px] min-[1080px]:flex max-[1180px]:ml-1 max-[1180px]:gap-4">
+        <nav aria-label="Main" className="ml-auto hidden items-center min-[1200px]:flex">
           {NAV.map((entry) =>
             isGroup(entry) ? (
               <Dropdown key={entry.label} group={entry} isActive={isActive} />
@@ -150,19 +182,15 @@ export function SiteHeader() {
                 key={entry.href}
                 href={entry.href}
                 aria-current={isActive(entry.href) ? "page" : undefined}
-                className={`border-b py-1 whitespace-nowrap transition-colors hover:text-ink ${isActive(entry.href) ? "border-ink text-ink" : "border-transparent text-ink-2"}`}
+                className="px-[10px] py-[5px] text-[16px] leading-[24px] font-bold whitespace-nowrap text-white transition-colors hover:text-accent"
               >
                 {entry.label}
               </Link>
             ),
           )}
         </nav>
-        <div className="ml-auto flex min-w-0 items-center gap-3 max-[1180px]:gap-2.5 max-[560px]:gap-1.5">
-          <ChainStatus />
+        <div className="flex min-w-0 items-center gap-[10px] max-[1199.98px]:ml-auto min-[1200px]:ml-[15px] max-[560px]:gap-1.5">
           <CopyCaTag compact />
-          <Link href="/app" className="btn btn-ghost h-9 min-h-0 px-3 text-[14px] max-[1240px]:hidden">
-            Practice desk
-          </Link>
           <span className="hidden sm:block">
             <NavWallet />
           </span>
@@ -171,17 +199,13 @@ export function SiteHeader() {
           </span>
           <button
             type="button"
-            aria-label={menu ? "Close menu" : "Open menu"}
+            aria-label="Open menu"
             aria-expanded={menu}
-            onClick={() => setMenu((v) => !v)}
-            className="grid size-9 shrink-0 cursor-pointer place-items-center border border-line-2 text-ink min-[1080px]:hidden"
+            onClick={() => setMenu(true)}
+            className="grid size-10 shrink-0 cursor-pointer place-items-center text-white min-[1200px]:hidden max-[400px]:-mr-1.5 max-[400px]:w-8"
           >
-            <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true">
-              {menu ? (
-                <path d="M3 1l12 12M15 1L3 13" stroke="currentColor" strokeWidth="1.6" />
-              ) : (
-                <path d="M0 1h18M0 7h18M0 13h18" stroke="currentColor" strokeWidth="1.6" />
-              )}
+            <svg width="24" height="18" viewBox="0 0 24 18" aria-hidden="true">
+              <path d="M0 1h24M0 9h24M0 17h24" stroke="currentColor" strokeWidth="1.8" />
             </svg>
           </button>
         </div>

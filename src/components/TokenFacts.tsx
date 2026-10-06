@@ -35,7 +35,7 @@ export function TokenFacts() {
   }, [live]);
   const pending = live ? (failed ? "unavailable" : "reading…") : "at launch";
   return (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-[15px] min-[440px]:grid-cols-2 lg:grid-cols-4">
       <Stat label="Name (on-chain)" value={facts?.name ?? pending} />
       <Stat label="Symbol (on-chain)" value={facts?.symbol ?? pending} />
       <Stat label="Total supply" value={facts?.supply != null ? compact(facts.supply) : pending} />

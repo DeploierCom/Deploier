@@ -1,5 +1,5 @@
 import { BRAND } from "@/config/brand";
-import { PageHead } from "@/components/ui";
+import { Hero, Prose } from "@/components/kit";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -20,17 +20,19 @@ const P = [
 export default function PrivacyPage() {
   return (
     <>
-      <PageHead kicker="Legal" title="Privacy policy" lede="Last updated 6 October 2026." />
-      <div className="wrap wrap-wide py-14">
-        <div className="max-w-[760px]">
-          {P.map(([h, b]) => (
-            <section key={h} className="border-t border-ink pt-5 pb-8">
-              <h2 className="serif text-[26px]">{h}</h2>
-              <p className="mt-2 text-[16px] text-ink-2">{b}</p>
-            </section>
-          ))}
+      <Hero title="Privacy policy" sub="Last updated 6 October 2026." />
+      <section className="py-[60px] max-md:py-[40px]">
+        <div className="ctn">
+          <Prose>
+            {P.map(([h, b]) => (
+              <section key={h}>
+                <h2>{h}</h2>
+                <p>{b}</p>
+              </section>
+            ))}
+          </Prose>
         </div>
-      </div>
+      </section>
     </>
   );
 }

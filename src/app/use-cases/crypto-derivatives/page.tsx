@@ -11,14 +11,12 @@ export const metadata = pageMeta({
 const c: UseCaseContent = {
   path: "/use-cases/crypto-derivatives",
   crumb: "Crypto derivatives",
-  kicker: "Use case · crypto derivatives",
-  title: (
-    <>
-      Margin that moves at midnight, <em>quietly.</em>
-    </>
-  ),
+  title: "Margin that moves at midnight, quietly",
+  art: { src: "/art/steps.svg", className: "top-[-60px] right-[40px] h-[calc(100%+60px)] w-auto" },
   lede: "Derivatives desks post and recall collateral all day and all night. On a public chain, every margin call becomes a public signal of stress. Deploier lets the call, the collateral and the counterparty stay between the two desks while the transfer itself is final and verifiable.",
   benefitsTitle: "Confidential collateral at derivatives speed",
+  benefitsLede:
+    "Post or recall collateral on Robinhood Chain at any hour while the size of the call and the desks involved stay off the public record.",
   benefits: [
     { title: "Calls without a headline", body: "A large margin top-up reads on the tape as one more commitment hash. Nobody can tell which desk is under pressure." },
     { title: "Settles any hour", body: "Robinhood Chain produces blocks continuously, so margin can move on a weekend when traditional rails are shut." },
@@ -32,7 +30,6 @@ const c: UseCaseContent = {
     { title: "Accepted and stamped", body: "The posting desk signs acceptance. The tape shows a settled commitment at a given block and nothing more." },
     { title: "Recall later", body: "When exposure falls, the reverse settlement returns the collateral the same way." },
   ],
-  scenariosTitle: "Where it fits",
   scenarios: [
     { title: "Bilateral swaps and options", body: "Two professional counterparties exchanging variation margin directly, with an auditable record each can show its own risk team." },
     { title: "Venue margin accounts", body: "A trading venue collecting margin from members without broadcasting which member just topped up." },

@@ -245,7 +245,7 @@ export function DeskApp() {
         ) : null}
 
         {!address ? (
-          <div className="border border-ink bg-card p-6">
+          <div className="rounded-[16px] bg-card p-[30px]">
             <h2 className="serif text-[28px] leading-tight">Connect a wallet to use the desk</h2>
             <p className="mt-2 max-w-[560px] text-[15px] text-ink-2">
               Every action is a free signature. Nothing is sent to {CHAIN.name} and no token approval is ever requested.
@@ -255,8 +255,8 @@ export function DeskApp() {
             </div>
           </div>
         ) : (
-          <div className="border border-ink bg-card">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink px-5 py-3">
+          <div className="overflow-hidden rounded-[16px] bg-card">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
               <div role="tablist" className="flex gap-1">
                 {(
                   [
@@ -270,7 +270,7 @@ export function DeskApp() {
                     type="button"
                     aria-selected={tab === k}
                     onClick={() => setTab(k)}
-                    className={`cursor-pointer px-3 py-1.5 text-[14.5px] font-medium ${tab === k ? "bg-ink text-paper" : "text-ink-2 hover:text-ink"}`}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-[14.5px] font-medium ${tab === k ? "bg-ink text-paper" : "text-ink-2 hover:text-ink"}`}
                   >
                     {label}
                   </button>
@@ -292,12 +292,12 @@ export function DeskApp() {
                   <input id="taker" className="field num" placeholder="0x…" value={taker} onChange={(e) => setTaker(e.target.value)} autoComplete="off" spellCheck={false} />
                 </div>
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <fieldset className="min-w-0 border border-line-2 p-4">
+                  <fieldset className="min-w-0 rounded-[12px] border border-line-2 p-4">
                     <legend className="eyebrow px-1">You deliver</legend>
                     <AssetSelect id="give-asset" value={giveAsset} onChange={setGiveAsset} />
                     <input aria-label="Amount you deliver" className="field num mt-3" inputMode="decimal" placeholder="Amount" value={giveAmount} onChange={(e) => setGiveAmount(e.target.value)} />
                   </fieldset>
-                  <fieldset className="min-w-0 border border-line-2 p-4">
+                  <fieldset className="min-w-0 rounded-[12px] border border-line-2 p-4">
                     <legend className="eyebrow px-1">You receive</legend>
                     <AssetSelect id="get-asset" value={getAsset} onChange={setGetAsset} />
                     <input aria-label="Amount you receive" className="field num mt-3" inputMode="decimal" placeholder="Amount" value={getAmount} onChange={(e) => setGetAmount(e.target.value)} />
@@ -391,7 +391,7 @@ export function DeskApp() {
       </div>
 
       <aside className="min-w-0" aria-labelledby="tape">
-        <div className="night border border-ink xl:sticky xl:top-24">
+        <div className="night overflow-hidden rounded-[16px] xl:sticky xl:top-[110px]">
           <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3">
             <h2 id="tape" className="serif text-[24px]">
               Public tape
@@ -453,7 +453,7 @@ function RecordCard({
   const verify = () => setVerified(recompute(rec) === rec.commitment && (!tape || tape.commitment === rec.commitment));
   const role = rec.kind === "issuance" ? "issuer" : rec.maker === me ? "maker" : rec.taker === me ? "counterparty" : "viewer";
   return (
-    <li className="border border-ink bg-card" data-testid="record">
+    <li className="overflow-hidden rounded-[16px] border border-line bg-paper" data-testid="record">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
         <span className="eyebrow">
           {rec.kind} · {saved.id} · you are {role}

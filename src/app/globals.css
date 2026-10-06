@@ -1,51 +1,67 @@
 @import "tailwindcss";
 
 /*
- * Deploier design tokens. A cool bond-paper ground, blue-black ink, a deep
- * navy for the settlement layer and a wax-seal red used sparingly for the
- * single thing on screen that matters most. Square corners and hairline rules:
- * the look of a settlement statement, not a dashboard.
+ * Deploier design tokens.
+ * Near-black bands (#1b1b1b) alternate with white sections; one pale mint
+ * accent marks every primary action and every link on a dark ground. A wide
+ * geometric display face sits over a light-weight Inter body. Cards are soft
+ * grey with a 16px radius; buttons are full pills.
+ *
+ * Older token names (paper, ink, stamp, seal, board, ...) are kept so the
+ * wallet, desk and swap components re-skin from this one file.
  */
 @theme {
-  --color-paper: #f3f2ee;
-  --color-paper-2: #e9e8e2;
-  --color-paper-3: #dedcd4;
-  --color-card: #f8f7f4;
-  --color-field: #fbfbf9;
-  --color-field-edge: #9a9c97;
-  --color-ink: #10141a;
-  --color-ink-2: #2d343d;
-  --color-ink-3: #5a636e;
-  --color-faint: #69717b;
-  --color-line: #d7d6cf;
-  --color-line-2: #b8b9b2;
+  --color-paper: #ffffff;
+  --color-paper-2: #f5f5f5;
+  --color-paper-3: #e9e9e9;
+  --color-card: #f5f5f5;
+  --color-field: #ffffff;
+  --color-field-edge: #1b1b1b;
+  --color-ink: #1b1b1b;
+  --color-ink-2: #2b2f33;
+  --color-ink-3: #5d646b;
+  --color-faint: #6c757d;
+  --color-line: #d3d6e1;
+  --color-line-2: #b7bccb;
 
-  --color-stamp: #1c3d6e;
-  --color-stamp-deep: #142d52;
-  --color-stamp-soft: rgba(28, 61, 110, 0.09);
-  --color-seal: #b6402a;
-  --color-seal-soft: rgba(182, 64, 42, 0.1);
+  /* Links and interactive text on white. */
+  --color-stamp: #6d38ff;
+  --color-stamp-deep: #5426d9;
+  --color-stamp-soft: rgba(109, 56, 255, 0.1);
+  --color-violet: #875cff;
+  --color-navy: #001a33;
+  /* Practice labels. */
+  --color-seal: #b8402b;
+  --color-seal-soft: rgba(184, 64, 43, 0.1);
 
-  --color-up: #1d6b4c;
-  --color-up-soft: rgba(29, 107, 76, 0.1);
-  --color-down: #ad3a25;
-  --color-down-soft: rgba(173, 58, 37, 0.1);
+  /* The accent: pale mint, used where the eye should land first. */
+  --color-accent: #a3ffd1;
+  --color-accent-2: #86f5be;
+  --color-accent-form: #b8ffdb;
+  --color-sky: #a8e2fa;
+  --color-coral: #ef8b7a;
 
-  --color-board: #0d1320;
-  --color-board-2: #141c2c;
-  --color-board-3: #26324a;
-  --color-chalk: #e8eae6;
-  --color-chalk-2: #9ea7b4;
+  --color-up: #1d7a52;
+  --color-up-soft: rgba(29, 122, 82, 0.1);
+  --color-down: #c0392b;
+  --color-down-soft: rgba(192, 57, 43, 0.1);
 
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --color-board: #1b1b1b;
+  --color-board-2: #242424;
+  --color-board-3: #3a3a3a;
+  --color-chalk: #ffffff;
+  --color-chalk-2: #c9cbcf;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-lexend), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-serif: var(--font-display);
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
-  --font-serif: var(--font-instrument), "Times New Roman", serif;
 }
 
 @layer base {
   :root {
-    --nav-bg: rgba(243, 242, 238, 0.94);
-    --shade: rgba(16, 20, 26, 0.08);
+    --shade: rgba(0, 0, 0, 0.07);
+    --header-h: 94px;
     color-scheme: light;
   }
   html {
@@ -54,19 +70,23 @@
   }
   body {
     background: var(--color-paper);
-    color: var(--color-ink);
+    color: var(--color-ink-2);
     font-family: var(--font-sans);
     font-size: 16px;
-    line-height: 1.55;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background: var(--color-stamp);
-    color: var(--color-paper);
+    background: var(--color-accent);
+    color: #000;
   }
   :focus-visible {
     outline: 2px solid var(--color-stamp);
     outline-offset: 2px;
+  }
+  .night :focus-visible,
+  .on-dark :focus-visible {
+    outline-color: var(--color-accent);
   }
   h1,
   h2,
@@ -75,6 +95,11 @@
   }
   p {
     text-wrap: pretty;
+  }
+  @media (max-width: 1199.98px) {
+    :root {
+      --header-h: 88px;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -91,82 +116,198 @@
 }
 
 @layer components {
+  /* Container: 30px gutter on wide screens, stepped widths below. */
+  .ctn {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 15px;
+  }
+  @media (min-width: 576px) {
+    .ctn {
+      max-width: 555px;
+    }
+  }
+  @media (min-width: 768px) {
+    .ctn {
+      max-width: 735px;
+    }
+  }
+  @media (min-width: 992px) {
+    .ctn {
+      max-width: 975px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .ctn {
+      max-width: 1155px;
+    }
+  }
+  @media (min-width: 1400px) {
+    .ctn {
+      max-width: 1440px;
+      padding-inline: 30px;
+    }
+  }
+  /* Legacy wrappers used by the app screens. */
   .wrap {
     width: 100%;
-    max-width: 1180px;
+    max-width: 1440px;
     margin-inline: auto;
-    padding-inline: 24px;
+    padding-inline: 30px;
   }
-  .wrap-wide {
-    max-width: 1320px;
-  }
-  @media (max-width: 560px) {
+  @media (max-width: 767.98px) {
     .wrap {
-      padding-inline: 16px;
+      padding-inline: 15px;
     }
   }
 
-  /* Buttons: rectangular, ink or navy, an arrow that moves on hover. */
+  /* Type scale. */
+  .d-h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 48px;
+    line-height: 1.2;
+  }
+  .d-h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 48px;
+  }
+  .d-h2s {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 36px;
+  }
+  .d-h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 38.4px;
+  }
+  .d-h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 30px;
+  }
+  .d-h4n {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 32px;
+  }
+  .d-h5 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28.8px;
+  }
+  .d-acc {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .t-sub {
+    font-size: 22px;
+    line-height: 32px;
+    font-weight: 300;
+  }
+  .t-body {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 300;
+  }
+  .t-more {
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 600;
+  }
+  @media (max-width: 767.98px) {
+    .d-h1 {
+      font-size: 40px;
+      line-height: 48px;
+    }
+    .d-h2 {
+      font-size: 32px;
+      line-height: 38.4px;
+    }
+    .d-h3 {
+      font-size: 28px;
+      line-height: 33.6px;
+    }
+    .t-sub {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  /* Pill buttons. The small arrow that slides on hover is a Deploier touch. */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    min-height: 2.5rem;
-    padding: 0.55rem 1.1rem;
-    border: 1px solid var(--color-ink);
-    border-radius: 2px;
-    font-size: 15px;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 10px 30px;
+    border: 1px solid transparent;
+    border-radius: 48px;
+    font-family: var(--font-sans);
+    font-size: 16px;
     font-weight: 500;
-    line-height: 1.2;
+    line-height: 24px;
     white-space: nowrap;
     cursor: pointer;
     transition:
-      background-color 0.15s,
-      color 0.15s,
-      border-color 0.15s;
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
+  }
+  .btn-sm {
+    min-height: 41px;
+    font-size: 14px;
+    line-height: 21px;
   }
   .btn .arr {
-    transition: transform 0.15s;
+    transition: transform 0.2s ease-in-out;
   }
   .btn:not(:disabled):hover .arr {
     transform: translateX(3px);
   }
+  .btn-accent,
+  .btn-pixel {
+    background: var(--color-accent);
+    color: #000;
+  }
+  .btn-accent:not(:disabled):hover,
+  .btn-pixel:not(:disabled):hover {
+    background: var(--color-accent-2);
+  }
+  .btn-ink {
+    background: #000;
+    color: #fff;
+  }
+  .btn-ink:not(:disabled):hover {
+    background: #333;
+  }
   .btn-ghost {
     background: transparent;
+    border-color: currentColor;
     color: var(--color-ink);
   }
   .btn-ghost:not(:disabled):hover {
     background: var(--color-ink);
-    color: var(--color-paper);
-  }
-  .btn-ink {
-    background: var(--color-ink);
-    color: var(--color-paper);
-  }
-  .btn-ink:not(:disabled):hover {
-    background: var(--color-stamp);
-    border-color: var(--color-stamp);
-  }
-  .btn-accent,
-  .btn-pixel {
-    background: var(--color-stamp);
-    border-color: var(--color-stamp);
-    color: #fff;
-  }
-  .btn-accent:not(:disabled):hover,
-  .btn-pixel:not(:disabled):hover {
-    background: var(--color-ink);
     border-color: var(--color-ink);
+    color: var(--color-paper);
   }
   .btn-up {
     background: var(--color-up);
-    border-color: var(--color-up);
     color: #fff;
   }
   .btn-down {
     background: var(--color-down);
-    border-color: var(--color-down);
     color: #fff;
   }
   .btn:disabled {
@@ -174,31 +315,61 @@
     opacity: 0.55;
   }
 
+  /* "Read >" style links. */
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 600;
+    color: var(--color-stamp);
+  }
+  .more svg {
+    transition: transform 0.2s ease-in-out;
+  }
+  .more:hover svg {
+    transform: translateX(3px);
+  }
+  .night .more,
+  .on-dark .more {
+    color: var(--color-accent);
+  }
+
   .eyebrow,
   .label {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 12px;
-    letter-spacing: 0.06em;
+    font-weight: 600;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-ink-3);
   }
   .serif {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-weight: 400;
   }
   .h-display {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.02;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .h-display em,
+  .d-h1 em {
+    font-style: italic;
+  }
+  .on-dark .d-h1 em,
+  .night .h-display em {
+    color: var(--color-accent);
   }
   .h-display em {
-    font-style: italic;
     color: var(--color-stamp);
   }
   .lede {
-    font-size: 19px;
-    line-height: 1.5;
+    font-size: 20px;
+    line-height: 30px;
+    font-weight: 300;
     color: var(--color-ink-2);
   }
   .num {
@@ -212,30 +383,31 @@
     color: var(--color-ink-2);
   }
 
-  .panel {
-    border: 1px solid var(--color-line-2);
-    background: var(--color-card);
-  }
+  .panel,
   .card {
-    border: 1px solid var(--color-line-2);
+    border-radius: 16px;
     background: var(--color-card);
   }
   .sheet {
-    border: 1px solid var(--color-ink);
-    background: var(--color-card);
-    box-shadow: 0 14px 40px var(--shade);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background: var(--color-paper);
+    box-shadow:
+      rgba(0, 0, 0, 0.07) 0 0 80px 0,
+      rgba(0, 0, 0, 0.05) 0 10px 30px 0;
   }
 
   .chip {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.65rem;
     border: 1px solid var(--color-line-2);
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    border-radius: 48px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
     white-space: nowrap;
     color: var(--color-ink-2);
   }
@@ -243,11 +415,17 @@
     content: "";
     width: 6px;
     height: 6px;
+    border-radius: 50%;
     background: currentColor;
   }
-  .chip-live {
+  .chip-live,
+  .chip-up {
     color: var(--color-up);
     border-color: color-mix(in srgb, var(--color-up) 45%, transparent);
+  }
+  .chip-down {
+    color: var(--color-down);
+    border-color: color-mix(in srgb, var(--color-down) 45%, transparent);
   }
   .chip-practice {
     color: var(--color-seal);
@@ -262,11 +440,13 @@
     width: 100%;
     min-width: 0;
     border: 1px solid var(--color-field-edge);
+    border-radius: 5px;
     background: var(--color-field);
-    padding: 0.6rem 0.75rem;
-    font-size: 15px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.2;
+    min-height: 40px;
     color: var(--color-ink);
-    border-radius: 2px;
   }
   .field::placeholder {
     color: var(--color-faint);
@@ -301,83 +481,113 @@
   }
   .tbl th {
     text-align: left;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-ink-3);
-    padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid var(--color-ink);
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--color-line-2);
     white-space: nowrap;
   }
   .tbl td {
-    padding: 0.65rem 0.75rem;
+    padding: 0.7rem 0.75rem;
     border-bottom: 1px solid var(--color-line);
     vertical-align: top;
   }
 
-  /* The redaction bar: the visual signature. Text the public never sees. */
-  .redact {
-    display: inline-block;
-    height: 0.78em;
-    vertical-align: -0.04em;
-    background: var(--color-ink);
+  /* Accordion rows (details/summary). */
+  .acc {
+    border-top: 1px solid rgba(13, 33, 107, 0.2);
   }
-  .night .redact {
-    background: var(--color-chalk);
+  .acc:last-child {
+    border-bottom: 1px solid rgba(13, 33, 107, 0.2);
+  }
+  .acc > summary {
+    display: flex;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 12.5px;
+  }
+  .acc > summary::-webkit-details-marker {
+    display: none;
+  }
+  .acc-toggle {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #000;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .acc-toggle svg {
+    transition: transform 0.25s ease;
+  }
+  .acc[open] .acc-toggle {
+    background: #000;
+    color: #fff;
+  }
+  .acc[open] .acc-toggle svg {
+    transform: rotate(180deg);
   }
 
-  /* Ruled ledger background for statement-like blocks. */
-  .ruled {
-    background-image: repeating-linear-gradient(to bottom, transparent 0 31px, var(--color-line) 31px 32px);
-  }
-
-  /* Swap page wrapper kept from the shared swap screen. */
   .acct .wrap-wide {
     max-width: 1080px;
   }
 }
 
-/* Dark settlement bands. Tokens are re-pointed so components inside read correctly. */
+/* Dark bands. Tokens are re-pointed so components inside read correctly. */
 .night {
-  --color-ink: #e8eae6;
-  --color-ink-2: #c6ccd4;
-  --color-ink-3: #9ea7b4;
-  --color-faint: #8d96a3;
-  --color-line: #26324a;
-  --color-line-2: #3a4864;
-  --color-card: #141c2c;
-  --color-paper: #0d1320;
-  --color-paper-2: #141c2c;
-  --color-paper-3: #26324a;
-  --color-field: #141c2c;
-  --color-field-edge: #3a4864;
-  --color-stamp: #9fb9e6;
-  --color-stamp-soft: rgba(159, 185, 230, 0.12);
-  --color-up: #7fc8a6;
-  --color-seal: #e58a72;
+  --color-ink: #ffffff;
+  --color-ink-2: #e9eaec;
+  --color-ink-3: #b3b7bd;
+  --color-faint: #9aa0a7;
+  --color-line: #383838;
+  --color-line-2: #4a4a4a;
+  --color-card: #242424;
+  --color-paper: #1b1b1b;
+  --color-paper-2: #242424;
+  --color-paper-3: #3a3a3a;
+  --color-field: #242424;
+  --color-field-edge: #5a5a5a;
+  --color-stamp: #a3ffd1;
+  --color-stamp-soft: rgba(163, 255, 209, 0.12);
+  --color-up: #7fdcae;
+  --color-seal: #f0a08f;
+  --color-down: #f08d80;
   background: var(--color-board);
-  color: var(--color-ink);
-}
-.night .btn-accent {
-  background: var(--color-chalk);
-  border-color: var(--color-chalk);
-  color: var(--color-board);
-}
-.night .btn-accent:not(:disabled):hover {
-  background: transparent;
-  color: var(--color-chalk);
+  color: var(--color-ink-2);
 }
 .night .btn-ghost {
-  border-color: var(--color-chalk);
+  border-color: #fff;
+  color: #fff;
 }
 .night .btn-ghost:not(:disabled):hover {
-  background: var(--color-chalk);
-  color: var(--color-board);
+  background: #fff;
+  color: #000;
+}
+.night .btn-ink {
+  background: #fff;
+  color: #000;
 }
 
-/* Hero ledger animation: rows reveal for the parties, stay barred for the public. */
+/* Gradient heading used on the dark asset strip. */
+.grad-text {
+  background-image: linear-gradient(90deg, #00d1ff 0%, #a3ffd1 30%, #cc8aff 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Statement art: rows reveal for the parties, stay barred for the public. */
 @keyframes slide-bar {
   0%,
   35% {
@@ -402,4 +612,28 @@
 }
 .pulse {
   animation: pulse-dot 1.6s ease-in-out infinite;
+}
+/* Slow drift for the hero line art. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-14px, 8px, 0);
+  }
+}
+.drift {
+  animation: drift 14s ease-in-out infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
 }

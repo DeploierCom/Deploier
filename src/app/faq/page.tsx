@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { BRAND } from "@/config/brand";
 import { JsonLd } from "@/components/JsonLd";
+import { Accordion, Hero } from "@/components/kit";
 import { FAQ } from "@/content/faq";
-import { CtaBand, Faq, PageHead } from "@/components/ui";
 import { breadcrumbLd, faqLd, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -16,39 +16,35 @@ export default function FaqPage() {
   return (
     <>
       <JsonLd data={[breadcrumbLd([{ name: "FAQ", path: "/faq" }]), faqLd(FAQ.map((f) => ({ q: f.q, a: f.a.join(" ") })))]} />
-      <PageHead
-        kicker="FAQ"
-        title={
-          <>
-            Questions, answered <em>plainly.</em>
-          </>
-        }
-        lede={`The short version of ${BRAND.name}, including the parts that are not built yet. If something here is unclear, the litepaper has the long version.`}
+      <Hero
+        art={{ src: "/art/waves.svg", className: "top-[-40px] right-0 h-[calc(100%+40px)] w-[55%] object-cover object-left-top" }}
+        title={`${BRAND.name} FAQs`}
+        sub="The short version, including the parts that are not built yet."
       />
-      <section className="border-b border-ink">
-        <div className="wrap wrap-wide py-14">
-          <Faq
-            items={FAQ.map((f) => ({
-              q: f.q,
-              a: (
-                <>
-                  {f.a.map((p) => (
-                    <p key={p.slice(0, 24)}>{p}</p>
-                  ))}
-                </>
-              ),
-            }))}
-          />
+      <section className="py-[105px] max-md:py-[50px]">
+        <div className="ctn">
+          <div className="mx-auto max-w-[918px]">
+            <Accordion
+              open={null}
+              size="md"
+              items={FAQ.map((f) => ({
+                q: f.q,
+                a: (
+                  <>
+                    {f.a.map((p) => (
+                      <p key={p.slice(0, 24)}>{p}</p>
+                    ))}
+                  </>
+                ),
+              }))}
+            />
+            <p className="mt-10 text-[15px] text-ink-2">
+              Still have a question? The <Link href="/litepaper" className="link">litepaper</Link> covers the design in depth, and the team answers the
+              rest through the <Link href="/contact" className="link">contact page</Link>.
+            </p>
+          </div>
         </div>
       </section>
-      <CtaBand title="Still have a question?" body="The litepaper covers the design in depth. The team answers the rest.">
-        <Link href="/litepaper" className="btn btn-accent">
-          Read the litepaper <span className="arr">→</span>
-        </Link>
-        <Link href="/contact" className="btn btn-ghost">
-          Contact
-        </Link>
-      </CtaBand>
     </>
   );
 }

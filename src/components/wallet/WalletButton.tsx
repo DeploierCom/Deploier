@@ -103,7 +103,7 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
   }
 
   const row =
-    "flex w-full items-center gap-3 border border-line-2 bg-field px-3.5 py-3 text-left text-[15px] font-medium";
+    "flex w-full items-center gap-3 rounded-[12px] border border-line bg-field px-3.5 py-3 text-left text-[15px] font-medium";
   const heading = "pb-2 text-[13px] text-ink-3";
 
   // The header blurs what is behind it, and a backdrop filter turns it into
@@ -116,7 +116,7 @@ function WalletDialog({ onClose }: { onClose: () => void }) {
       aria-labelledby="wallet-dialog-title"
       className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4"
     >
-      <div className="absolute inset-0 bg-[rgba(15,20,17,0.55)]" onClick={close} />
+      <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]" onClick={close} />
       <div className="relative flex max-h-[92dvh] w-full max-w-sm flex-col overflow-hidden sheet">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="wallet-dialog-title" className="font-display text-[26px] leading-tight text-ink">
@@ -254,7 +254,7 @@ export function NavWallet({ compact = false }: { compact?: boolean }) {
     <button
       type="button"
       onClick={open}
-      className={`btn btn-pixel whitespace-nowrap ${compact ? "h-[34px] px-2.5 text-[13px]" : "h-[34px] px-3.5 text-[14px]"}`}
+      className={`btn btn-pixel btn-sm whitespace-nowrap ${compact ? "!min-h-[38px] !px-3 !text-[13px]" : "!px-[30px]"}`}
     >
       {compact ? "Connect" : "Connect wallet"}
     </button>
@@ -320,7 +320,7 @@ function AccountMenu({ compact }: { compact: boolean }) {
           onClick={switchNetwork}
           disabled={switching}
           title={`Wallet is on chain ${chainId}. Switch to ${chain.name}.`}
-          className="flex h-[34px] cursor-pointer items-center gap-1.5 border border-down px-3 text-[13px] font-medium whitespace-nowrap text-down transition-colors hover:bg-down-soft disabled:opacity-60"
+          className="flex h-[41px] cursor-pointer items-center gap-1.5 rounded-full border border-down px-3.5 text-[13px] font-medium whitespace-nowrap text-down transition-colors hover:bg-down-soft disabled:opacity-60"
         >
           <TriangleAlert className="size-3.5" />
           {switching ? "Confirm…" : compact ? `Chain ${chainId}` : `Wrong network · ${chainId}`}
@@ -331,14 +331,14 @@ function AccountMenu({ compact }: { compact: boolean }) {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-[34px] cursor-pointer items-center gap-2 border border-ink bg-transparent px-2.5 text-[14px] font-medium text-ink transition-colors hover:bg-paper-2"
+        className="flex h-[41px] cursor-pointer items-center gap-2 rounded-full border border-ink/70 bg-transparent px-3.5 text-[14px] font-medium text-ink transition-colors hover:bg-paper-2"
       >
-        <span className={`size-[7px] ${onRobinhoodChain ? "bg-up" : "bg-down"}`} />
+        <span className={`size-[8px] rounded-full ${onRobinhoodChain ? "bg-up" : "bg-down"}`} />
         <span className="font-mono text-[13px]">{shortAddress(address, compact ? 4 : 6, 4)}</span>
         {!compact && balance !== null ? (
           <span className="hidden text-up lg:inline">{balance} ETH</span>
         ) : null}
-        <ChevronDown className="size-3 text-ink-3" />
+        {compact ? null : <ChevronDown className="size-3 text-ink-3" />}
       </button>
 
       {open && place

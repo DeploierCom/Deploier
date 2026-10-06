@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist_Mono, Inter, Lexend_Exa } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/config/brand";
 import { JsonLd } from "@/components/JsonLd";
@@ -10,9 +10,10 @@ import { WalletModalProvider } from "@/components/wallet/WalletButton";
 import { WalletProvider } from "@/components/wallet/WalletProvider";
 import { HOME_DESCRIPTION, HOME_TITLE, siteLd } from "@/lib/seo";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
+const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-inter", display: "swap" });
+// Wide geometric display face for headings.
+const lexend = Lexend_Exa({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-lexend", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
-const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-instrument", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(BRAND.url),
@@ -23,16 +24,16 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", site: BRAND.xHandle, creator: BRAND.xHandle, title: HOME_TITLE, description: HOME_DESCRIPTION },
 };
 
-export const viewport: Viewport = { themeColor: "#f3f2ee" };
+export const viewport: Viewport = { themeColor: "#1b1b1b" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
+    <html lang="en" className={`${inter.variable} ${lexend.variable} ${geistMono.variable}`}>
       <head>
         <JsonLd data={siteLd} />
       </head>
       <body className="min-h-dvh overflow-x-hidden">
-        <a href="#main" className="fixed -top-20 left-5 z-[100] bg-ink px-5 py-3 text-paper focus:top-2.5">
+        <a href="#main" className="fixed -top-20 left-5 z-[100] rounded-full bg-accent px-5 py-3 text-black focus:top-2.5">
           Skip to content
         </a>
         <WalletProvider>

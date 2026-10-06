@@ -211,9 +211,9 @@ export function SwapScreen() {
       <div className="mx-auto grid max-w-[1180px] grid-cols-1 gap-8 px-4 pt-8 pb-12 sm:px-6 lg:grid-cols-[1fr_440px] lg:gap-12">
         <div className="min-w-0 lg:pt-4">
           <p className="eyebrow mb-3.5">
-            Swap · <i className="font-serif text-[17px]">{CHAIN.name}</i>
+            Swap · <span className="normal-case">{CHAIN.name}</span>
           </p>
-          <h1 className="h-display text-[clamp(36px,5.2vw,60px)]">
+          <h1 className="h-display text-[clamp(34px,4.4vw,48px)]">
             Swap ETH for <em>{BRAND.symbol}.</em>
           </h1>
           <p className="lede mt-4 max-w-md">
@@ -222,7 +222,7 @@ export function SwapScreen() {
 
           <div className="panel mt-7 max-w-md pt-4">
             <p className="label pt-2.5">Where it trades</p>
-            <p className="mt-1 font-serif text-[28px] leading-tight" data-testid="swap-venue">
+            <p className="mt-1 font-display text-[24px] leading-tight" data-testid="swap-venue">
               {!TOKEN.isLive
                 ? "Opens at launch"
                 : marketFailed && !market
@@ -295,7 +295,7 @@ export function SwapScreen() {
         <div className="relative w-full">
           <div className="panel pt-4">
             <div id="swap-head" className={`flex items-center justify-between gap-2 ${ring("swap-head")}`}>
-              <h2 className="font-serif text-[26px]">Swap</h2>
+              <h2 className="font-display text-[24px] font-medium">Swap</h2>
               <span className="flex items-center gap-1 font-mono text-[11px]">
                 <span className="text-ink-3">Slippage</span>
                 {SLIPPAGES.map((bps) => (

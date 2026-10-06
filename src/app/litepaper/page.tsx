@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BRAND, CHAIN } from "@/config/brand";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHead } from "@/components/ui";
+import { Hero, More, Prose } from "@/components/kit";
 import { breadcrumbLd, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -11,6 +11,15 @@ export const metadata = pageMeta({
     "The Deploier litepaper: a two-layer design for private settlement on Robinhood Chain, with commitments, view keys, signed intent, the contract plan and risks.",
   type: "article",
 });
+
+const GUIDE: { title: string; body: string; id: string }[] = [
+  { id: "abstract", title: "Abstract and the problem", body: "Why settlement on a transparent ledger leaks positions, and why consortium ledgers trade that for trust in an operator." },
+  { id: "design", title: "Two layers", body: "A private record held by the parties and a public commitment, both anchored to Robinhood Chain blocks rather than a new chain." },
+  { id: "commitments", title: "Commitments and view keys", body: "How a salted keccak256 hash proves a deal without revealing it, and how one key discloses one record and nothing else." },
+  { id: "intent", title: "Signed intent and lifecycle rules", body: "Plain-language signatures with one-time nonces, one named counterparty, a 24-hour expiry and withdrawal before acceptance." },
+  { id: "contracts", title: "The contract plan and the token", body: "Escrow, issuance and a commitment registry as design goals, and the intended roles of the token once they exist." },
+  { id: "risks", title: "Risks, limits and roadmap", body: "Where practice mode depends on one server, what stays public on any chain, and the order in which the pieces ship." },
+];
 
 const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
   {
@@ -191,41 +200,38 @@ export default function LitepaperPage() {
           },
         ]}
       />
-      <PageHead
-        kicker="Litepaper · v0.1, October 2026"
-        title={
-          <>
-            Private settlement, <em>in one read.</em>
-          </>
-        }
-        lede={`How ${BRAND.name} keeps the terms of a deal between its parties while the proof that it settled stays public on ${CHAIN.name}.`}
+      <Hero
+        art={{ src: "/art/waves.svg", className: "top-[-40px] right-0 h-[calc(100%+40px)] w-[55%] object-cover object-left-top" }}
+        title={`${BRAND.name} litepaper`}
+        sub={`Version 0.1, October 2026. How ${BRAND.name} keeps the terms of a deal between its parties while the proof that it settled stays public on ${CHAIN.name}.`}
       />
-      <div className="wrap wrap-wide grid grid-cols-1 gap-12 py-14 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <nav aria-label="Contents" className="hidden lg:block">
-          <div className="sticky top-24">
-            <p className="eyebrow">Contents</p>
-            <ol className="mt-3 space-y-1.5 text-[14px]">
-              {SECTIONS.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-ink-2 hover:text-stamp">
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </nav>
-        <article className="min-w-0 max-w-[740px]">
-          {SECTIONS.map((s) => (
-            <section key={s.id} id={s.id} className="scroll-mt-24 border-t border-ink pt-6 pb-10">
-              <h2 className="serif text-[32px] leading-tight">{s.title}</h2>
-              <div className="prose-d mt-4 text-[17px] leading-relaxed [&_li]:mt-2 [&_li]:text-ink-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">
-                {s.body}
+      <section className="py-[75px] max-md:py-[50px]">
+        <div className="ctn">
+          <div className="grid grid-cols-1 gap-[15px] md:grid-cols-2">
+            {GUIDE.map((g) => (
+              <div key={g.id} className="flex min-h-[220px] min-w-0 flex-col rounded-[16px] bg-gradient-to-b from-[#fafaff] to-[#f3f1ff] px-[30px] pt-[35px] pb-[30px] shadow-[inset_0_0_0_1px_#eceaf8]">
+                <h2 className="d-h5 text-black">{g.title}</h2>
+                <p className="mt-auto pt-8 text-[14px] leading-[21px] text-black">{g.body}</p>
+                <More href={`#${g.id}`} className="mt-4">
+                  Read more
+                </More>
               </div>
-            </section>
-          ))}
-        </article>
-      </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="pb-[100px] max-md:pb-[60px]">
+        <div className="ctn">
+          <Prose>
+            {SECTIONS.map((s) => (
+              <section key={s.id} id={s.id} className="scroll-mt-28">
+                <h2>{s.title}</h2>
+                {s.body}
+              </section>
+            ))}
+          </Prose>
+        </div>
+      </section>
     </>
   );
 }

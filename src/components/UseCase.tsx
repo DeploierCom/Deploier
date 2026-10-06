@@ -1,82 +1,98 @@
-import Link from "next/link";
+import { CHAIN, USDG } from "@/config/brand";
+import { STOCKS } from "@/config/stocks";
 import { JsonLd } from "@/components/JsonLd";
+import { Accordion, AssetStrip, Band, Btn, Cards, FormSection, Hero, LearnCards, SkyBand, type Art } from "@/components/kit";
+import { QuoteBand } from "@/components/kit-client";
 import { USE_CASES } from "@/components/site";
-import { Columns, CtaBand, PageHead, PracticeTag, Rows, Section } from "@/components/ui";
+import { PracticeTag } from "@/components/ui";
+import { PRINCIPLES } from "@/content/quotes";
 import { breadcrumbLd } from "@/lib/seo";
 
 export type UseCaseContent = {
   path: string;
   crumb: string;
-  kicker: string;
   title: React.ReactNode;
   lede: string;
+  art: Art;
   benefitsTitle: string;
+  benefitsLede: string;
   benefits: { title: string; body: string }[];
   flowTitle: string;
   flow: { title: string; body: string }[];
   scenarios: { title: string; body: string }[];
-  scenariosTitle: string;
   today: string;
+  /** Optional extra block placed after the benefits (for example the financing orbit). */
   extra?: React.ReactNode;
-  extraTitle?: string;
-  extraLede?: string;
 };
 
-/** Shared layout for the four use-case pages. */
+const ASSETS = [
+  { symbol: "ETH", name: "Gas asset" },
+  { symbol: "WETH", name: "Wrapped ether" },
+  { symbol: USDG.symbol, name: USDG.name },
+  ...STOCKS.map((s) => ({ symbol: s.symbol, name: s.name })),
+];
+
+/** Shared layout for the use-case pages. */
 export function UseCasePage({ c }: { c: UseCaseContent }) {
   const others = USE_CASES.filter((u) => u.href !== c.path);
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: c.crumb, path: c.path }])} />
-      <PageHead kicker={c.kicker} title={c.title} lede={c.lede}>
-        <Link href="/app" className="btn btn-accent">
-          Try it on the practice desk <span className="arr">→</span>
-        </Link>
-      </PageHead>
+      <Hero art={c.art} title={c.title} sub={c.lede}>
+        <Btn href="/app" small>
+          Try it on the practice desk
+        </Btn>
+      </Hero>
 
-      <Section index="01" title={c.benefitsTitle}>
-        <Columns cols={c.benefits.length === 4 ? 2 : 3} items={c.benefits} />
-      </Section>
+      <Band>
+        <h2 className="d-h2 max-w-[682px] text-black">{c.benefitsTitle}</h2>
+        <p className="mt-[10px] mb-[24px] max-w-[682px] text-[16px] leading-[24px] text-ink-2">{c.benefitsLede}</p>
+        <Cards cols={2} titleTone="violet" minH={210} items={c.benefits} />
+      </Band>
 
-      <Section index="02" night title={c.flowTitle}>
-        <Rows items={c.flow} />
-      </Section>
+      {c.extra}
 
-      <Section index="03" title={c.scenariosTitle}>
-        <Columns cols={2} items={c.scenarios} />
-      </Section>
-
-      {c.extra ? (
-        <Section index="04" title={c.extraTitle ?? ""} lede={c.extraLede}>
-          {c.extra}
-        </Section>
-      ) : null}
-
-      <Section index={c.extra ? "05" : "04"} title="What you can do today" lede={c.today}>
-        <PracticeTag>Practice mode until audited contracts ship</PracticeTag>
-        <div className="mt-10">
-          <p className="eyebrow">Other use cases</p>
-          <ul className="mt-3 border-t border-ink">
-            {others.map((u) => (
-              <li key={u.href} className="border-b border-line">
-                <Link href={u.href} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 hover:text-stamp">
-                  <span className="serif text-[24px]">{u.label}</span>
-                  <span className="text-[14.5px] text-ink-3">{u.note}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <Band>
+        <div className="grid grid-cols-1 gap-x-[15px] gap-y-8 lg:grid-cols-2">
+          <h2 className="d-h2 max-w-[524px] text-black lg:pt-2">{c.flowTitle}</h2>
+          <div className="min-w-0">
+            <Accordion group={`flow-${c.path}`} items={c.flow.map((f, i) => ({ q: `${i + 1}. ${f.title}`, a: <p>{f.body}</p> }))} />
+          </div>
         </div>
-      </Section>
+      </Band>
 
-      <CtaBand title="Run this flow with two wallets" body="The desk records the agreement privately and puts only its hash on the public tape.">
-        <Link href="/app" className="btn btn-accent">
-          Open the practice desk <span className="arr">→</span>
-        </Link>
-        <Link href="/contact" className="btn btn-ghost">
-          Talk to the team
-        </Link>
-      </CtaBand>
+      <SkyBand title={`Get started on ${CHAIN.name} today`} action={<Btn href="/app" tone="ink">Open the practice desk</Btn>}>
+        <p>{c.today}</p>
+        <p>
+          <PracticeTag>Practice mode until audited contracts ship</PracticeTag>
+        </p>
+      </SkyBand>
+
+      <AssetStrip
+        title={`Settles against assets on ${CHAIN.name}`}
+        note="Real assets a settlement can name today. They are issued by others; none of their issuers is a partner of this project."
+        assets={ASSETS}
+      />
+
+      <FormSection dark title="Ready to try it?" tagline="Run this flow with two wallets on the practice desk." topic={c.crumb} id="try">
+        <p className="mb-4">Where it fits:</p>
+        <ul>
+          {c.scenarios.map((s) => (
+            <li key={s.title}>
+              <strong className="font-semibold">{s.title}.</strong> {s.body}
+            </li>
+          ))}
+        </ul>
+      </FormSection>
+
+      <QuoteBand quotes={PRINCIPLES} />
+
+      <LearnCards
+        items={[
+          ...others.slice(0, 2).map((u) => ({ href: u.href, title: `${u.label}: ${u.note}` })),
+          { href: "/litepaper", title: "The litepaper: private settlement in one read" },
+        ]}
+      />
     </>
   );
 }

@@ -21,7 +21,7 @@ export const NAV: (NavLink | NavGroup)[] = [
     ],
   },
   { href: "/developers", label: "Developers" },
-  { label: "Use cases", items: USE_CASES },
+  { label: "Use Cases", items: USE_CASES },
   {
     label: "Learn",
     items: [
@@ -58,15 +58,13 @@ export const FOOTER: NavGroup[] = [
       { href: "/brand", label: "Brand kit" },
     ],
   },
-  { label: "Use cases", items: USE_CASES.map(({ href, label }) => ({ href, label })) },
-  {
-    label: "Company",
-    items: [
-      { href: "/contact", label: "Contact" },
-      { href: "/terms", label: "Terms" },
-      { href: "/privacy", label: "Privacy" },
-    ],
-  },
+  { label: "Use Cases", items: USE_CASES.map(({ href, label }) => ({ href, label })) },
+];
+
+export const LEGAL: NavLink[] = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export const isGroup = (x: NavLink | NavGroup): x is NavGroup => "items" in x;

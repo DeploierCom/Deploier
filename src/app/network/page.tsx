@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { BRAND, CHAIN, PONS, USDG, WETH, explorerAddress } from "@/config/brand";
 import { JsonLd } from "@/components/JsonLd";
+import { AssetStrip, Band, Btn, Hero, Intro, SkyBand, Split } from "@/components/kit";
 import { LiveStrip, StockBoard } from "@/components/live";
-import { CtaBand, Defs, LiveTag, PageHead, Section } from "@/components/ui";
+import { Defs, LiveTag } from "@/components/ui";
 import { AccessButton } from "@/components/wallet/WalletButton";
+import { STOCKS } from "@/config/stocks";
 import { breadcrumbLd, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -23,54 +24,75 @@ export default function NetworkPage() {
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Live network", path: "/network" }])} />
-      <PageHead
-        kicker="Live network"
-        title={
-          <>
-            {CHAIN.name}, <em>as it is</em> right now.
-          </>
-        }
-        lede={`Everything ${BRAND.name} settles against is already on ${CHAIN.name}. This page reads it live: blocks, gas, the dollar token and the tokenized stocks, each linked to the public explorer so you can check the source yourself.`}
+      <Hero
+        art={{ src: "/art/planes.svg", className: "top-[30px] right-[-60px] w-[640px] max-[1199.98px]:w-[460px]" }}
+        title={`${CHAIN.name}, as it is right now`}
+        sub="Blocks, gas, the dollar token and the tokenized stocks, read live and linked to the public explorer so you can check every source."
       >
-        <AccessButton />
-      </PageHead>
+        <AccessButton className="btn-sm" />
+      </Hero>
 
-      <Section index="01" title="Chain readings" lede="Polled every few seconds from the public RPC. If a read fails, the tile says so instead of guessing.">
-        <div className="mb-8">
+      <Intro>
+        Everything {BRAND.name} settles against is already on {CHAIN.name}. Readings are polled every few seconds from the public RPC; if a
+        read fails, the tile says so instead of guessing.
+      </Intro>
+
+      <Band className="!pt-[40px]">
+        <div className="mb-4">
           <LiveTag />
         </div>
         <LiveStrip />
-      </Section>
+      </Band>
 
-      <Section
-        index="02"
-        title="Tokenized stocks on the chain"
-        lede="Each token below was verified on-chain as an official stock token: its contract points at the issuer's beacon, its symbol matches and its name says so. Prices come from Chainlink."
-      >
+      <Band className="!pt-0">
+        <h2 className="d-h2 max-w-[915px] text-black">Tokenized stocks on the chain</h2>
+        <p className="t-body mt-3 mb-[30px] max-w-[915px] text-black">
+          Each token below was verified on-chain as an official stock token: its contract points at the issuer&apos;s beacon, its symbol matches
+          and its name says so. Prices come from Chainlink.
+        </p>
         <StockBoard />
-      </Section>
+      </Band>
 
-      <Section index="03" night title="Network facts and contract addresses" lede="The fixed facts the site is built on. Add the network to your wallet with the button above, or by hand with these values.">
-        <Defs
-          items={[
-            ["Network", CHAIN.name],
-            ["Chain id", `${CHAIN.id} (${CHAIN.hex})`],
-            ["Gas asset", `${CHAIN.nativeSymbol} (18 decimals)`],
-            ["Public RPC", <span key="rpc" className="num text-[13.5px] break-all">{CHAIN.publicRpc}</span>],
-            ["Explorer", <a key="exp" href={CHAIN.explorer} target="_blank" rel="noreferrer" className="link">{CHAIN.explorer.replace("https://", "")}</a>],
-            [`${USDG.symbol} (${USDG.name})`, addr(USDG.address)],
-            ["WETH", addr(WETH)],
-            ["Pons launch factory", addr(PONS.factory)],
-            [`${BRAND.symbol}`, <span key="ca">Contract address coming soon. It will appear here and on the token page at launch.</span>],
-          ]}
-        />
-      </Section>
+      <AssetStrip
+        title={`Assets live on ${CHAIN.name}`}
+        note={`The assets a ${BRAND.name} settlement can name. They are issued by others, not by ${BRAND.name}, and none of their issuers is a partner.`}
+        assets={[
+          { symbol: "ETH", name: "Gas asset" },
+          { symbol: "WETH", name: "Wrapped ether" },
+          { symbol: USDG.symbol, name: USDG.name },
+          ...STOCKS.map((s) => ({ symbol: s.symbol, name: s.name })),
+        ]}
+      />
 
-      <CtaBand title="Put these assets through a private settlement" body="Pick USDG, WETH or any stock token above as a leg on the practice desk.">
-        <Link href="/app" className="btn btn-accent">
-          Open the practice desk <span className="arr">→</span>
-        </Link>
-      </CtaBand>
+      <Band>
+        <Split title="Network facts and contract addresses">
+          <p>The fixed facts the site is built on. Add the network to your wallet with the button above, or by hand with these values.</p>
+          <div className="pt-4">
+            <Defs
+              items={[
+                ["Network", CHAIN.name],
+                ["Chain id", `${CHAIN.id} (${CHAIN.hex})`],
+                ["Gas asset", `${CHAIN.nativeSymbol} (18 decimals)`],
+                ["Public RPC", <span key="rpc" className="num text-[13.5px] break-all">{CHAIN.publicRpc}</span>],
+                [
+                  "Explorer",
+                  <a key="exp" href={CHAIN.explorer} target="_blank" rel="noreferrer" className="link">
+                    {CHAIN.explorer.replace("https://", "")}
+                  </a>,
+                ],
+                [`${USDG.symbol} (${USDG.name})`, addr(USDG.address)],
+                ["WETH", addr(WETH)],
+                ["Pons launch factory", addr(PONS.factory)],
+                [`${BRAND.symbol}`, <span key="ca">Contract address coming soon. It will appear here and on the token page at launch.</span>],
+              ]}
+            />
+          </div>
+        </Split>
+      </Band>
+
+      <SkyBand title="Put these assets through a private settlement" action={<Btn href="/app" tone="ink">Open the practice desk</Btn>}>
+        <p>Pick USDG, WETH or any stock token above as a leg on the practice desk. Nothing moves; you sign two messages and compare the public and private views.</p>
+      </SkyBand>
     </>
   );
 }

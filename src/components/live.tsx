@@ -7,12 +7,12 @@ import { Stat } from "@/components/ui";
 import { compact, usd } from "@/lib/format";
 
 /** Four live readings of Robinhood Chain: latest block, gas, ETH/USD, USDG supply. */
-export function LiveStrip() {
+export function LiveStrip({ cols = 4 }: { cols?: 2 | 4 }) {
   const { facts, failed } = useChain();
   const supply = facts?.usdg.supply ? Number(BigInt(facts.usdg.supply) / 10n ** BigInt(facts.usdg.decimals)) : null;
   const age = facts?.blockTime ? Math.max(0, Math.round(facts.at / 1000 - facts.blockTime)) : null;
   return (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4" data-testid="live-strip">
+    <div className={`grid grid-cols-1 gap-[15px] min-[440px]:grid-cols-2 ${cols === 4 ? "lg:grid-cols-4" : ""}`} data-testid="live-strip">
       <Stat
         label="Latest block"
         testid="live-block"
@@ -36,8 +36,7 @@ export function LiveStrip() {
 
 type StockRow = { symbol: string; name: string; token: string; feed: string; price: number | null; updatedAt: number | null };
 
-/** Tokenized equities on Robinhood Chain, priced live by their Chainlink feeds. */
-export function StockBoard() {
+function useStocks() {
   const [rows, setRows] = useState<StockRow[] | null>(null);
   const [open, setOpen] = useState<boolean | null>(null);
   const [failed, setFailed] = useState(false);
@@ -60,8 +59,32 @@ export function StockBoard() {
       window.clearInterval(t);
     };
   }, []);
+  return { rows, open, failed };
+}
+
+/** One line of live stock-token prices, for the announcement band. */
+export function StockTicker() {
+  const { rows, failed } = useStocks();
   return (
-    <div className="min-w-0" data-testid="stock-board">
+    <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[14px]" data-testid="stock-ticker" aria-live="polite">
+      {rows ? (
+        rows.map((r) => (
+          <li key={r.symbol} className="whitespace-nowrap">
+            <span className="font-semibold">{r.symbol}</span> <span className="num">{r.price != null ? usd(r.price) : "–"}</span>
+          </li>
+        ))
+      ) : (
+        <li className="text-black/70">{failed ? "Price feeds unavailable right now" : "Reading Chainlink feeds…"}</li>
+      )}
+    </ul>
+  );
+}
+
+/** Tokenized equities on Robinhood Chain, priced live by their Chainlink feeds. */
+export function StockBoard() {
+  const { rows, open, failed } = useStocks();
+  return (
+    <div className="min-w-0 rounded-[16px] bg-paper-2 p-[25px] max-md:p-4" data-testid="stock-board">
       <div className="scroll-x">
         <table className="tbl min-w-[560px]">
           <thead>
