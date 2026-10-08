@@ -90,8 +90,8 @@ export default function NetworkPage() {
         </Split>
       </Band>
 
-      <SkyBand title="Put these assets through a private settlement" action={<Btn href="/app" tone="ink">Open the practice desk</Btn>}>
-        <p>Pick USDG, WETH or any stock token above as a leg on the practice desk. Nothing moves; you sign two messages and compare the public and private views.</p>
+      <SkyBand title="Put these assets through a private settlement" action={<Btn href="/app" tone="ink">Open the desk</Btn>}>
+        <p>Pick USDG, WETH or any stock token above as a leg on the desk. Settle it for real through the escrow, or rehearse in practice mode where nothing moves.</p>
       </SkyBand>
     </>
   );

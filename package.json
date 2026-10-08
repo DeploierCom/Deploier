@@ -9,8 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/lib/practice/*.test.ts src/lib/onchain/*.test.ts scripts/*.test.mjs",
-    "verify-deployment": "node scripts/verify-deployment.mjs",
-    "contracts:bytecode": "node scripts/contracts-bytecode.mjs"
+    "verify-deployment": "node scripts/verify-deployment.mjs"
   },
   "dependencies": {
     "@noble/curves": "^2.4.0",

@@ -278,15 +278,15 @@ export default function HomePage() {
 
       <FormSection
         title={`Ready to try ${BRAND.name}?`}
-        tagline="The contracts that will move real assets privately are not deployed yet. Everything below is real and works now:"
+        tagline="The settlement contracts are live on Robinhood Chain and their source is verified on Blockscout. What you can do now:"
         topic="home"
       >
         <ul>
           <li>
             Connect MetaMask, Rabby, OKX, Coinbase Wallet or another EVM wallet; {CHAIN.name} (chain id {CHAIN.id}) is added for you
           </li>
-          <li>Propose a practice settlement to a second wallet you control and accept it from the other side</li>
-          <li>Describe a treasury bill, fund share or receivable, set its holder allowlist and record a signed practice issuance</li>
+          <li>Propose a settlement to a counterparty wallet and have it accepted on chain, or rehearse it in practice mode first</li>
+          <li>Describe a treasury bill, fund share or receivable, set its holder allowlist and issue it as an allowlisted token</li>
           <li>
             Follow {BRAND.symbol} launch news on X at{" "}
             <a href={BRAND.x} target="_blank" rel="noreferrer" className="text-stamp hover:underline">
@@ -296,7 +296,7 @@ export default function HomePage() {
         </ul>
         <div className="mt-[30px] flex flex-wrap gap-[10px]">
           <Btn href="/app">
-            Open the practice desk <span className="arr">→</span>
+            Open the desk <span className="arr">→</span>
           </Btn>
         </div>
       </FormSection>

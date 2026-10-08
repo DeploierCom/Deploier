@@ -1,6 +1,6 @@
 # Deploier — Enterprise privacy settlement for regulated markets. Real-time settlement. Institutional trust.
 
-Website: https://deploier.com · X: [@deploier](https://x.com/deploier) · Token: `$DEPLOIER` on Robinhood Chain
+Website: https://deploier.com · X: [@deploiercom](https://x.com/deploiercom) · Source: https://github.com/DeploierCom/Deploier · Token: `$DEPLOIER` on Robinhood Chain
 
 ## The problem
 
@@ -48,12 +48,12 @@ token legs themselves (which tokens, how much, between which wallets) are public
 - Live Robinhood Chain data: latest block, gas, ETH/USD, USDG supply.
 - Live Chainlink prices for the official tokenized stocks on Robinhood Chain (AAPL, GOOGL, NVDA, TSLA).
 - The desk at `/app`: private settlements between two wallets and issuances, with a public tape. Practice mode (free
-  signatures, nothing moves) until the contracts are deployed; then real transactions, with practice mode still one click away.
+  signatures, nothing moves) is still one click away.
+- SettlementEscrow, CommitmentRegistry and AllowlistTokenFactory, deployed on Robinhood Chain with verified source on
+  Blockscout (addresses below): the desk sends real transactions through them.
 
 **Coming later**
 
-- Contract addresses for SettlementEscrow, CommitmentRegistry and AllowlistTokenFactory (written and tested in `contracts/`;
-  they appear in `src/config/contracts.ts` and on `/developers` once deployed).
 - The `$DEPLOIER` contract address (published on `/token` and in the header at launch; the swap page turns on by itself).
   The settlement contracts do not depend on it.
 
@@ -98,13 +98,15 @@ FORK_URL=https://rpc.mainnet.chain.robinhood.com forge test --match-path test/De
 The fork tests run the contracts against the real USDG, WETH and stock tokens on Robinhood Chain, including a stock leg the
 issuer blocks (the whole settlement reverts and leg A is refunded).
 
-`npm run contracts:bytecode` copies the creation code into `src/lib/onchain/bytecode.ts` for the deploy page.
+### Deployed contracts (Robinhood Chain, chain id 4663)
 
-### Deploying
+| Contract | Address | Creation transaction |
+|---|---|---|
+| SettlementEscrow | `0x9904e82a9440775f4367cea5f21ee0d65dc55fa5` | `0x25574ef86c5119b95f196eea67bf5670502a027ebabdb0ae93f1aec71cc69177` |
+| CommitmentRegistry | `0xb0af5cbf90cb0200ff7ecac583e623470c05a81d` | `0x19d766e6823bdb81c37a13aff249e0c23906badd9834348e281905944d043e19` |
+| AllowlistTokenFactory | `0x5278225718923ed5399c14661a62adf2a8fe2d68` | `0x8c8c61291af497c0ed779aed88497e6c58cc068101c84af547301d7f5c48e796` |
 
-None of the three contracts takes constructor arguments or has an owner. Open `/deploy` (not linked, not indexed), connect the
-deploying wallet on Robinhood Chain and deploy each contract (about 1.07M, 0.41M and 1.63M gas). The page prints the lines to
-paste into `src/config/contracts.ts`; each address switches its part of the desk to real transactions on the next build.
+None takes constructor arguments or has an owner. Source is verified on Blockscout and Sourcify.
 
 ### Verifying a deployment
 
@@ -140,10 +142,10 @@ src/app/            pages (Next.js App Router), API routes under src/app/api
 src/components/     site UI, wallet dialog and menu, practice desk, live data
 src/config/         brand.ts (name, links, token address), contracts.ts (contract addresses), stocks.ts, wallets.ts
 src/lib/practice/   tickets (signed actions), desk (records, tape), commitments, tests
-src/lib/onchain/    calldata and decoding, browser transactions, on-chain tape, deploy bytecode
+src/lib/onchain/    calldata and decoding, browser transactions, on-chain tape
 src/lib/            RPC relay rules, rate limits, Pons swap helpers, SEO helpers
 contracts/          SettlementEscrow, CommitmentRegistry, AllowlistToken(+Factory), Foundry tests
-scripts/            contracts-bytecode.mjs, verify-deployment.mjs
+scripts/            verify-deployment.mjs
 public/             brand files and wallet logos
 ```
 
@@ -151,13 +153,13 @@ public/             brand files and wallet logos
 
 - `$DEPLOIER`: launched on Robinhood Chain through Pons. Contract address: published at launch in `src/config/brand.ts`.
 - USDG `0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168`, WETH `0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73`.
-- SettlementEscrow, CommitmentRegistry, AllowlistTokenFactory: source in `contracts/src`, addresses in
-  `src/config/contracts.ts` (empty until deployed). No owner, admin key, pause, fee, deposit limit or upgrade path.
+- SettlementEscrow, CommitmentRegistry, AllowlistTokenFactory: source in `contracts/src`, deployed addresses in
+  `src/config/contracts.ts` and in the table under "Deployed contracts". No owner, admin key, pause, fee, deposit limit or upgrade path.
 
 ## Security and status
 
-- Early stage. Practice mode is off-chain and relies on the site's server to store records and serve the tape. With the
-  contracts deployed, status and commitments come from the chain; the server only keeps private terms, locked by view key.
+- Early stage. Practice mode is off-chain and relies on the site's server to store records and serve the tape. For real
+  settlements, status and commitments come from the chain; the server only keeps private terms, locked by view key.
 - The contracts cannot be upgraded or paused, so a bug cannot be patched after deployment. Stock tokens on Robinhood Chain can
   be paused or blocked by their issuer; a settlement then reverts as a whole and leg A stays refundable.
 - Signed actions use one-time nonces burned atomically; the action applied is the one stored with the nonce.
@@ -165,7 +167,7 @@ public/             brand files and wallet logos
 - The browser RPC relay allows read methods only, with a contract allowlist and bounded log ranges, and rate limits per network.
 - Token transfers on Robinhood Chain are public, amounts included. Hiding amounts on-chain needs a shielded design, which is a separate project.
 
-Please report security issues privately via a direct message to [@deploier](https://x.com/deploier).
+Please report security issues privately via a direct message to [@deploiercom](https://x.com/deploiercom).
 
 ## Contributing
 

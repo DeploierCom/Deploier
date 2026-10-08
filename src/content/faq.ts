@@ -31,14 +31,14 @@ export const FAQ: { q: string; a: string[] }[] = [
     q: `Which contracts does ${BRAND.name} use?`,
     a: [
       "Three, with the source published: SettlementEscrow (delivery versus payment between two named wallets), CommitmentRegistry (a public tape of commitments) and AllowlistTokenFactory (tokens only allowlisted wallets can hold, managed by the wallet that issues them).",
-      "None of them has an owner, an admin key, a pause switch, a fee or an upgrade path. Their addresses appear on the developers page once deployed; until then the desk runs in practice mode.",
+      "None of them has an owner, an admin key, a pause switch, a fee or an upgrade path. All three are deployed on Robinhood Chain with verified source; their addresses are on the developers page.",
     ],
   },
   {
     q: "What works today and what does not?",
     a: [
       "Working now: wallet connection, live Robinhood Chain data, live prices for the tokenized stocks, and the desk for private settlements and issuances with real wallet signatures.",
-      "Written and tested: the escrow, registry and issuance contracts. Each switches its part of the desk to real transactions once deployed. Not built: the operator network, hidden amounts and any compliance integration.",
+      "Deployed and verified: the escrow, registry and issuance contracts, so the desk sends real transactions; practice mode stays one click away. Not built: the operator network, hidden amounts and any compliance integration.",
     ],
   },
   {

@@ -5,12 +5,13 @@ import { pageMeta } from "@/lib/seo";
 export const metadata = pageMeta({
   path: "/terms",
   title: "Terms of Use for the Deploier Website | Deploier",
-  description: "Terms of use for the Deploier website and practice desk on Robinhood Chain: practice mode moves no funds, nothing here is advice, and use is at your own risk.",
+  description: "Terms of use for the Deploier website and settlement desk on Robinhood Chain: on-chain transactions are final, practice mode moves no funds, nothing here is advice.",
 });
 
 const P = [
-  ["The site", `This website presents ${BRAND.name}, a ${BRAND.category} on ${CHAIN.name}, and a practice desk. By using it you accept these terms.`],
-  ["Practice mode", "The desk records signed practice actions. It sends no transactions, moves no assets and creates no rights or obligations between wallets."],
+  ["The site", `This website presents ${BRAND.name}, a ${BRAND.category} on ${CHAIN.name}, and a settlement desk. By using it you accept these terms.`],
+  ["Practice mode", "In practice mode the desk records signed practice actions. It sends no transactions, moves no assets and creates no rights or obligations between wallets."],
+  ["On-chain transactions", "Outside practice mode the desk prepares transactions to immutable contracts on Robinhood Chain that your wallet signs and sends. They move real assets, cannot be reversed by the team, and you are responsible for checking every transaction before you sign it."],
   ["No advice", `Nothing on this site is financial, legal or tax advice, and nothing is an offer to sell or a solicitation to buy ${BRAND.symbol} or any other asset.`],
   ["Your wallet", "You control your wallet and keys. Only sign messages you have read. The site never needs your private key or seed phrase."],
   ["Third parties", `Live data comes from ${CHAIN.name} RPC endpoints, Chainlink feeds and public market APIs. They may be delayed or wrong; the site shows a reading as unavailable when it fails.`],
@@ -21,7 +22,7 @@ const P = [
 export default function TermsPage() {
   return (
     <>
-      <Hero title="Terms of use" sub="Last updated 6 October 2026." />
+      <Hero title="Terms of use" sub="Last updated 7 October 2026." />
       <section className="py-[60px] max-md:py-[40px]">
         <div className="ctn">
           <Prose>

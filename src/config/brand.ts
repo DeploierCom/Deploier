@@ -26,10 +26,10 @@ export const BRAND = {
   chainName: "Robinhood Chain",
   description:
     "Deploier is a privacy settlement layer on Robinhood Chain. Counterparties settle trades, payments and tokenized real-world assets with private books and public, verifiable rules.",
-  x: "https://x.com/deploier",
-  xHandle: "@deploier",
-  // Public source repository. Kept off the site until the owner publishes it.
-  github: "https://github.com/",
+  x: "https://x.com/deploiercom",
+  xHandle: "@deploiercom",
+  // Public source repository.
+  github: "https://github.com/DeploierCom/Deploier",
   ca: CA,
 } as const;
 

@@ -113,7 +113,7 @@ export default function BuildPage() {
 
       <FormSection title={`Build on ${BRAND.name}`} tagline="Builders deserve a clear picture before they commit time." topic="build">
         <div className="mb-4">
-          <TargetTag>Contracts written; addresses appear once deployed</TargetTag>
+          <TargetTag>Contracts deployed and verified; addresses on the developers page</TargetTag>
         </div>
         <ul>
           <li>Available now: the record format, the commitment function, the signed-ticket flow and a public tape API, all exercised by the practice desk.</li>

@@ -186,7 +186,7 @@ export default function DevelopersPage() {
         <Split title="Settlement contracts">
           <p>
             Three contracts, Solidity 0.8.24, source and tests in the repository. None has an owner, an admin key, a pause switch, a fee or an
-            upgrade path. An empty address means not deployed yet: that part of the desk runs in practice mode. Each deployed address can be
+            upgrade path. All three are deployed on Robinhood Chain; practice mode stays available on the desk. Each deployed address can be
             checked byte for byte against the build with <span className="num">npm run verify-deployment -- &lt;address&gt; --tx &lt;creation tx&gt;</span>, and its
             verified source is on Blockscout.
           </p>

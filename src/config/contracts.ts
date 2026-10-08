@@ -8,12 +8,12 @@
 // The NEXT_PUBLIC_* variables are only a fallback for local test builds against
 // a devnet or a fork. Leave them unset in production.
 
-const ESCROW = "";
-const ESCROW_BLOCK = 0;
-const REGISTRY = "";
-const REGISTRY_BLOCK = 0;
-const FACTORY = "";
-const FACTORY_BLOCK = 0;
+const ESCROW = "0x9904e82a9440775f4367cea5f21ee0d65dc55fa5";
+const ESCROW_BLOCK = 82185384;
+const REGISTRY = "0xb0af5cbf90cb0200ff7ecac583e623470c05a81d";
+const REGISTRY_BLOCK = 82185525;
+const FACTORY = "0x5278225718923ed5399c14661a62adf2a8fe2d68";
+const FACTORY_BLOCK = 82185642;
 
 const isAddr = (v: string) => /^0x[0-9a-fA-F]{40}$/.test(v);
 const pick = (fixed: string, env: string | undefined) => (isAddr(fixed) ? fixed : env && isAddr(env) ? env : "");
